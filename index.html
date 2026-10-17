@@ -49,20 +49,20 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 no-print">
-          <button onclick="toggleModal('rosterModal')" class="px-3 py-2 text-xs font-semibold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg transition">
-            Full Group & Berth List (22)
+          <button onclick="switchTab('checklist')" id="tabChecklistBtn" class="px-3 py-2 text-xs font-bold bg-sky-600 text-white rounded-lg shadow-sm transition">
+            🎒 Packing Checklist
           </button>
-          <button onclick="window.print()" class="px-3 py-2 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition">
-            Print
+          <button onclick="switchTab('gallery')" id="tabGalleryBtn" class="px-3 py-2 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition flex items-center gap-1">
+            <span>📸</span> Tour Photo Gallery
           </button>
-          <button onclick="resetChecklist()" class="px-3 py-2 text-xs font-medium bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg transition">
-            Reset List
+          <button onclick="toggleModal('emergencyModal')" class="px-3 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-sm transition">
+            🚨 SOS
           </button>
         </div>
       </div>
 
-      <!-- Progress Bar -->
-      <div class="mt-4">
+      <!-- Progress Bar (Visible only on checklist tab) -->
+      <div id="checklistProgressWrapper" class="mt-4">
         <div class="flex justify-between items-center text-xs font-semibold mb-1.5">
           <span id="progressLabel" class="text-slate-600 uppercase tracking-wider">Your Packing Progress</span>
           <span id="progressStats" class="text-sky-700 font-bold text-sm">0 / 0 Packed (0%)</span>
@@ -76,60 +76,230 @@
 
   <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-    <!-- Member Selector & Personalized Train Ticket Card -->
-    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
-          <label for="memberSelect" class="text-xs font-bold uppercase tracking-wider text-sky-800 shrink-0">
-            Select Tour Member:
-          </label>
-          <select id="memberSelect" onchange="selectMember(this.value)" class="w-full sm:w-80 px-3 py-2 text-sm font-semibold bg-sky-50 border border-sky-300 text-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+    <!-- TAB 1: CHECKLIST VIEW -->
+    <div id="viewChecklist" class="space-y-6">
+      <!-- Quick-Dial Emergency & Faculty Contact Banner -->
+      <section class="bg-rose-50/70 rounded-xl border border-rose-200 p-4 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-rose-200/70">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📞</span>
+            <h2 class="text-xs md:text-sm font-bold text-rose-950 uppercase tracking-wide">
+              24x7 Tour Emergency & Faculty Quick-Dial (Tap to Call)
+            </h2>
+          </div>
+          <button onclick="toggleModal('emergencyModal')" class="text-xs font-semibold text-rose-700 hover:text-rose-900 underline text-left sm:text-right no-print">
+            View All Helplines & Hospital Numbers →
+          </button>
         </div>
-        <div class="text-xs text-slate-500">
-          Tour Coordinator: <strong class="text-slate-800">Prof. Ujjal Kumar Das</strong> (<a href="tel:8250341647" class="text-sky-600 underline">8250341647</a>)
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+          <a href="tel:8250341647" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-rose-200 hover:border-rose-400 transition">
+            <div>
+              <div class="font-bold text-slate-900">Prof. Ujjal Kr. Das</div>
+              <div class="text-[11px] text-slate-500">HOD • B2-8 / S2-17</div>
+            </div>
+            <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">8250341647</span>
+          </a>
+          <a href="tel:7501106583" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-rose-200 hover:border-rose-400 transition">
+            <div>
+              <div class="font-bold text-slate-900">Prof. Barun Kr. Paul</div>
+              <div class="text-[11px] text-slate-500">Faculty • B2-2 / S2-18</div>
+            </div>
+            <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">7501106583</span>
+          </a>
+          <a href="tel:8926612351" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-rose-200 hover:border-rose-400 transition">
+            <div>
+              <div class="font-bold text-slate-900">Prof. Ashraful Islam</div>
+              <div class="text-[11px] text-slate-500">Faculty • B2-67 / S2-19</div>
+            </div>
+            <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">8926612351</span>
+          </a>
+          <a href="tel:9830607334" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-rose-200 hover:border-rose-400 transition">
+            <div>
+              <div class="font-bold text-slate-900">Prof. Rupa D Banerjee</div>
+              <div class="text-[11px] text-slate-500">Faculty • B2-3 / S2-20</div>
+            </div>
+            <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">9830607334</span>
+          </a>
+          <a href="tel:8768434156" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-rose-200 hover:border-rose-400 transition">
+            <div>
+              <div class="font-bold text-slate-900">Prof. S Dutta</div>
+              <div class="text-[11px] text-slate-500">Faculty • B2-5 / S2-21</div>
+            </div>
+            <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">8768434156</span>
+          </a>
         </div>
+      </section>
+
+      <!-- Member Selector & Ticket Card -->
+      <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
+            <label for="memberSelect" class="text-xs font-bold uppercase tracking-wider text-sky-800 shrink-0">
+              Select Tour Member:
+            </label>
+            <select id="memberSelect" onchange="selectMember(this.value)" class="w-full sm:w-80 px-3 py-2 text-sm font-semibold bg-sky-50 border border-sky-300 text-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+          <button onclick="toggleModal('rosterModal')" class="text-xs font-semibold text-sky-700 hover:underline">
+            View All 22 Roster & Berths →
+          </button>
+        </div>
+
+        <div id="memberTicketCard"></div>
+
+        <div class="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-900 rounded-lg px-3 py-2.5 space-y-1">
+          <div><strong>Mandatory Original ID Rule:</strong> Every student and faculty member must carry their original Govt. Photo ID + Srikrishna College ID card during the train journey and in Sikkim.</div>
+          <div><strong>Name Spelling Alert:</strong> <strong>Pratap Paul</strong> (printed as <em>PRATAP PAL</em>), <strong>Soyon Das</strong> (<em>SHOYON DAS</em>), <strong>Bikram Saha</strong>, and <strong>Jayita Tikadar</strong> must carry original government photo ID.</div>
+        </div>
+      </section>
+
+      <!-- Search, Filter & Add Custom Item -->
+      <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 no-print">
+        <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div class="flex flex-1 w-full gap-2">
+            <input id="searchInput" type="text" placeholder="Search items (e.g., ID, jacket, blanket, power bank)..." oninput="renderChecklist()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <div class="flex rounded-lg border border-slate-300 overflow-hidden shrink-0">
+              <button onclick="setFilter('all')" id="filter-all" class="px-3 py-2 text-xs font-medium bg-sky-600 text-white">All</button>
+              <button onclick="setFilter('remaining')" id="filter-remaining" class="px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50">Remaining</button>
+              <button onclick="setFilter('packed')" id="filter-packed" class="px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50">Packed</button>
+            </div>
+          </div>
+
+          <form onsubmit="addItem(event)" class="flex w-full md:w-auto gap-2">
+            <select id="newCategorySelect" class="px-3 py-2 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+            <input id="newItemInput" type="text" placeholder="Add personal item..." required class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <button type="submit" class="px-4 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg shrink-0 transition">
+              + Add
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <section id="categoriesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></section>
+    </div>
+
+    <!-- TAB 2: PHOTO GALLERY VIEW -->
+    <div id="viewGallery" class="space-y-6 hidden">
+      <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">📸 Sikkim Tour Live Photo Stream</h2>
+            <p class="text-xs text-slate-500">Upload snapshots from Ravangla, Pelling, Namchi, or the train journey to share with the group instantly!</p>
+          </div>
+          <button onclick="toggleModal('uploadPhotoModal')" class="px-4 py-2 text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-lg shadow-sm transition flex items-center gap-1.5">
+            <span>➕</span> Upload New Photo
+          </button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5"></div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Upload Photo Modal -->
+  <div id="uploadPhotoModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-sm">Upload Tour Photo</h3>
+        <button onclick="toggleModal('uploadPhotoModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+      <form onsubmit="handlePhotoUpload(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Select Photo File or Paste Image URL:</label>
+          <input type="file" id="photoFileInput" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 mb-2" />
+          <div class="text-center text-slate-400 my-1">- OR -</div>
+          <input type="url" id="photoUrlInput" placeholder="https://example.com/photo.jpg" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Your Name:</label>
+          <input type="text" id="photoUploaderName" required placeholder="e.g., Barun Kr Paul" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Caption / Location:</label>
+          <input type="text" id="photoCaption" required placeholder="e.g., Buddha Park, Ravangla" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="toggleModal('uploadPhotoModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-semibold">Share Photo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Emergency Contacts Directory Modal -->
+  <div id="emergencyModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-xl overflow-hidden">
+      <div class="px-5 py-4 bg-rose-600 text-white flex justify-between items-center">
+        <div>
+          <h3 class="font-bold text-base">🚨 Emergency & Official Tour Contact Directory</h3>
+          <p class="text-xs text-rose-100">Tap any number below to call directly from your phone</p>
+        </div>
+        <button onclick="toggleModal('emergencyModal')" class="text-white/80 hover:text-white text-sm font-bold px-2 py-1">✕ Close</button>
       </div>
 
-      <!-- Selected Member Ticket Details -->
-      <div id="memberTicketCard"></div>
-
-      <!-- Important Group Notice -->
-      <div class="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-900 rounded-lg px-3 py-2.5 space-y-1">
+      <div class="p-5 overflow-y-auto space-y-5 text-xs">
         <div>
-          <strong>Important ID Rule:</strong> Original Govt. Photo ID + College ID is mandatory on the train and at Sikkim checkposts.
-        </div>
-        <div>
-          <strong>Name Spelling Note:</strong> <strong>Pratap Paul</strong> (printed as <em>PRATAP PAL</em> on return PNR 6511082206), <strong>Soyon Das</strong> (<em>SHOYON DAS</em> on onward PNR 6511081358), <strong>Bikram Saha</strong>, and <strong>Jayita Tikadar</strong> must carry original photo ID matching their records.
-        </div>
-      </div>
-    </section>
-
-    <!-- Search, Filter & Add Custom Item -->
-    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 no-print">
-      <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
-        <div class="flex flex-1 w-full gap-2">
-          <input id="searchInput" type="text" placeholder="Search items (e.g., ID, jacket, blanket, power bank)..." oninput="renderChecklist()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
-          <div class="flex rounded-lg border border-slate-300 overflow-hidden shrink-0">
-            <button onclick="setFilter('all')" id="filter-all" class="px-3 py-2 text-xs font-medium bg-sky-600 text-white">All</button>
-            <button onclick="setFilter('remaining')" id="filter-remaining" class="px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50">Remaining</button>
-            <button onclick="setFilter('packed')" id="filter-packed" class="px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50">Packed</button>
+          <h4 class="font-bold text-slate-900 uppercase tracking-wider mb-2">1. Srikrishna College Faculty Coordinators</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50 flex justify-between items-center">
+              <div><div class="font-bold text-slate-900">Prof. Ujjal Kumar Das (HOD)</div><div class="text-slate-500">Onward: B2-8 SU • Return: S2-17 L</div></div>
+              <a href="tel:8250341647" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-md">📞 8250341647</a>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50 flex justify-between items-center">
+              <div><div class="font-bold text-slate-900">Prof. Barun Kumar Paul</div><div class="text-slate-500">Onward: B2-2 M • Return: S2-18 M</div></div>
+              <a href="tel:7501106583" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-md">📞 7501106583</a>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50 flex justify-between items-center">
+              <div><div class="font-bold text-slate-900">Prof. Ashraful Islam</div><div class="text-slate-500">Onward: B2-67 U • Return: S2-19 U</div></div>
+              <a href="tel:8926612351" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-md">📞 8926612351</a>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50 flex justify-between items-center">
+              <div><div class="font-bold text-slate-900">Prof. Rupa D Banerjee</div><div class="text-slate-500">Onward: B2-3 U • Return: S2-20 L</div></div>
+              <a href="tel:9830607334" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-md">📞 9830607334</a>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50 flex justify-between items-center sm:col-span-2">
+              <div><div class="font-bold text-slate-900">Prof. S Dutta</div><div class="text-slate-500">Onward: B2-5 M • Return: S2-21 M</div></div>
+              <a href="tel:8768434156" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-md">📞 8768434156</a>
+            </div>
           </div>
         </div>
 
-        <form onsubmit="addItem(event)" class="flex w-full md:w-auto gap-2">
-          <select id="newCategorySelect" class="px-3 py-2 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
-          <input id="newItemInput" type="text" placeholder="Add personal item..." required class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
-          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg shrink-0 transition">
-            + Add
-          </button>
-        </form>
+        <div>
+          <h4 class="font-bold text-slate-900 uppercase tracking-wider mb-2">2. Indian Railways & On-Board Train Assistance</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="p-3 rounded-lg border border-sky-200 bg-sky-50 flex justify-between items-center">
+              <div><div class="font-bold text-sky-950">Railway Helpline</div><div class="text-sky-700">Medical / Coach / Enquiry</div></div>
+              <a href="tel:139" class="px-3 py-1.5 bg-sky-600 text-white font-bold rounded-md">📞 139</a>
+            </div>
+            <div class="p-3 rounded-lg border border-sky-200 bg-sky-50 flex justify-between items-center">
+              <div><div class="font-bold text-sky-950">RPF Train Security</div><div class="text-sky-700">24x7 Safety on Train</div></div>
+              <a href="tel:182" class="px-3 py-1.5 bg-sky-600 text-white font-bold rounded-md">📞 182</a>
+            </div>
+            <div class="p-3 rounded-lg border border-sky-200 bg-sky-50 flex justify-between items-center">
+              <div><div class="font-bold text-sky-950">IRCTC Official Care</div><div class="text-sky-700">E-Ticketing Support</div></div>
+              <a href="tel:14646" class="px-3 py-1.5 bg-sky-600 text-white font-bold rounded-md">📞 14646</a>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 uppercase tracking-wider mb-2">3. Sikkim Medical, Police & District Helplines</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="p-3 rounded-lg border border-rose-200 bg-rose-50 flex justify-between items-center">
+              <div><div class="font-bold text-rose-950">National Emergency SOS</div><div class="text-rose-700">Police, Fire & Rescue</div></div>
+              <a href="tel:112" class="px-3 py-1.5 bg-rose-600 text-white font-bold rounded-md">📞 112</a>
+            </div>
+            <div class="p-3 rounded-lg border border-rose-200 bg-rose-50 flex justify-between items-center">
+              <div><div class="font-bold text-rose-950">Sikkim Medical Ambulance</div><div class="text-rose-700">24x7 Medical Response</div></div>
+              <a href="tel:108" class="px-3 py-1.5 bg-rose-600 text-white font-bold rounded-md">📞 108</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
-
-    <!-- Checklist Categories Grid -->
-    <section id="categoriesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></section>
-
-  </main>
+    </div>
+  </div>
 
   <!-- Full 22-Member Group Roster Modal -->
   <div id="rosterModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 no-print">
@@ -148,7 +318,7 @@
               <th class="py-2 px-2">#</th>
               <th class="py-2 px-2">Name</th>
               <th class="py-2 px-2">Category</th>
-              <th class="py-2 px-2">Mobile</th>
+              <th class="py-2 px-2">Mobile (Tap to Call)</th>
               <th class="py-2 px-2">Onward Seat (Coach B2)</th>
               <th class="py-2 px-2">Return Seat (Coach S2)</th>
             </tr>
@@ -160,7 +330,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'packmate_sikkim_group_2026_v2';
+    const STORAGE_KEY = 'packmate_sikkim_group_2026_v5';
 
     const tourMembers = [
       { sl: 1, name: 'Ujjal Kumar Das', role: 'Faculty/Staff (HOD)', sem: 'Faculty', ageSex: '43/M', mobile: '8250341647', onPnr: '6511081358', onSeat: 'B2-8 (Side Upper)', retPnr: '6211082046', retSeat: 'S2-17 (Lower)', note: '' },
@@ -168,9 +338,9 @@
       { sl: 3, name: 'Ashraful Islam', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '32/M', mobile: '8926612351', onPnr: '6511081358', onSeat: 'B2-67 (Upper)', retPnr: '6211082046', retSeat: 'S2-19 (Upper)', note: '' },
       { sl: 4, name: 'Rupa D Banerjee', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '50/F', mobile: '9830607334', onPnr: '6511081358', onSeat: 'B2-3 (Upper)', retPnr: '6211082046', retSeat: 'S2-20 (Lower)', note: '' },
       { sl: 5, name: 'S Dutta', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '32/F', mobile: '8768434156', onPnr: '6511081358', onSeat: 'B2-5 (Middle)', retPnr: '6211082046', retSeat: 'S2-21 (Middle)', note: '' },
-      { sl: 6, name: 'Jayita Tikadar', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '7811886916', onPnr: '6511080813', onSeat: 'B2-66 (Middle)', retPnr: '6411082334', retSeat: 'S2-62 (Upper)', note: 'Name printed as JAYITA TIKADAR on tickets. Carry original photo ID.' },
+      { sl: 6, name: 'Jayita Tikadar', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '7811886916', onPnr: '6511080813', onSeat: 'B2-66 (Middle)', retPnr: '6411082334', retSeat: 'S2-62 (Upper)', note: 'Name printed as JAYITA TIKADAR. Carry original photo ID.' },
       { sl: 7, name: 'Diya Ghosh', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '6295134819', onPnr: '6511080813', onSeat: 'B2-10 (Middle)', retPnr: '6411082334', retSeat: 'S2-58 (Middle)', note: '' },
-      { sl: 8, name: 'Pratap Paul', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9749411478', onPnr: '6211081808', onSeat: 'B2-61 (Middle)', retPnr: '6511082206', retSeat: 'S2-9 (Lower)', note: 'Printed as PRATAP PAL on Return PNR 6511082206. Carry original photo ID.' },
+      { sl: 8, name: 'Pratap Paul', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9749411478', onPnr: '6211081808', onSeat: 'B2-61 (Middle)', retPnr: '6511082206', retSeat: 'S2-9 (Lower)', note: 'Printed as PRATAP PAL on Return PNR. Carry original photo ID.' },
       { sl: 9, name: 'Arupan Kr Biswas', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9382185857', onPnr: '6511080813', onSeat: 'B2-14 (Upper)', retPnr: '6411082334', retSeat: 'S2-61 (Middle)', note: '' },
       { sl: 10, name: 'Nilesh Pal', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '8101496394', onPnr: '6511080813', onSeat: 'B2-11 (Upper)', retPnr: '6411082334', retSeat: 'S2-59 (Upper)', note: '' },
       { sl: 11, name: 'Surya Das', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9378160982', onPnr: '6311081463', onSeat: 'B2-19 (Upper)', retPnr: '6111082120', retSeat: 'S2-2 (Middle)', note: '' },
@@ -179,12 +349,12 @@
       { sl: 14, name: 'Dipendu Sadhukan', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '9735659316', onPnr: '6211081808', onSeat: 'B2-51 (Upper)', retPnr: '6511082206', retSeat: 'S2-11 (Upper)', note: '' },
       { sl: 15, name: 'Joy Biswas', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8670666864', onPnr: '6311081900', onSeat: 'B2-22 (Upper)', retPnr: '6111082120', retSeat: 'S2-4 (Lower)', note: '' },
       { sl: 16, name: 'Bibhan Majumder', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '6295013578', onPnr: '6211081808', onSeat: 'B2-53 (Middle)', retPnr: '6511082206', retSeat: 'S2-14 (Upper)', note: '' },
-      { sl: 17, name: 'Bikram Saha', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '7318944470', onPnr: '6311081463', onSeat: 'B2-21 (Middle)', retPnr: '6111082120', retSeat: 'S2-1 (Lower)', note: 'Name printed as BIKRAM SAHA on tickets. Carry original photo ID.' },
+      { sl: 17, name: 'Bikram Saha', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '7318944470', onPnr: '6311081463', onSeat: 'B2-21 (Middle)', retPnr: '6111082120', retSeat: 'S2-1 (Lower)', note: 'Name printed as BIKRAM SAHA. Carry original photo ID.' },
       { sl: 18, name: 'Sudip Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7501118644', onPnr: '6311081463', onSeat: 'B2-18 (Middle)', retPnr: '6111082120', retSeat: 'S2-8 (Side Upper)', note: '' },
-      { sl: 19, name: 'Soyon Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7865004293', onPnr: '6511081358', onSeat: 'B2-6 (Upper)', retPnr: '6211082046', retSeat: 'S2-22 (Upper)', note: 'Printed as SHOYON DAS (Age 22) on Onward PNR 6511081358. Carry original photo ID.' },
+      { sl: 19, name: 'Soyon Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7865004293', onPnr: '6511081358', onSeat: 'B2-6 (Upper)', retPnr: '6211082046', retSeat: 'S2-22 (Upper)', note: 'Printed as SHOYON DAS on Onward PNR. Carry original photo ID.' },
       { sl: 20, name: 'Srija Biswas', role: 'Student', sem: '7th Sem', ageSex: '21/F', mobile: '7908137501', onPnr: '6511080813', onSeat: 'B2-13 (Middle)', retPnr: '6411082334', retSeat: 'S2-57 (Lower)', note: '' },
       { sl: 21, name: 'Nipobithi Roy', role: 'Student', sem: '7th Sem', ageSex: '21/F', mobile: '9832360055', onPnr: '6511080813', onSeat: 'B2-16 (Side Upper)', retPnr: '6411082334', retSeat: 'S2-60 (Lower)', note: '' },
-      { sl: 22, name: 'Sajib Mondal', role: 'Student', sem: 'Update Sem', ageSex: '19/M', mobile: 'Update Mobile No.', onPnr: '6211081808', onSeat: 'B2-50 (Middle)', retPnr: '6511082206', retSeat: 'S2-10 (Middle)', note: 'Please give your mobile number and semester to Prof. Ujjal Kumar Das before departure.' }
+      { sl: 22, name: 'Sajib Mondal', role: 'Student', sem: 'Update Sem', ageSex: '19/M', mobile: '', onPnr: '6211081808', onSeat: 'B2-50 (Middle)', retPnr: '6511082206', retSeat: 'S2-10 (Middle)', note: 'Please provide mobile number and semester to faculty.' }
     ];
 
     function getDefaultCategories() {
@@ -198,7 +368,7 @@
             { id: 'd3', name: 'Photocopies of Photo ID & 2 Passport-Size Photos (for Sikkim permits/hotels)', qty: 2, packed: false },
             { id: 'd4', name: 'Digital/Printed Train Tickets (Coach B2 Onward & Coach S2 Return)', qty: 1, packed: false },
             { id: 'd5', name: 'Printed Principal Approval Letter & 22-Member Roster (Faculty Coordinators)', qty: 1, packed: false },
-            { id: 'd6', name: 'Cash in Small Denominations (for Ravangla, Pelling & Namchi local stalls) + UPI', qty: 1, packed: false }
+            { id: 'd6', name: 'Cash in Small Denominations (for Ravangla, Pelling & Namchi stalls) + UPI', qty: 1, packed: false }
           ]
         },
         {
@@ -253,9 +423,13 @@
     }
 
     let state = {
-      selectedMemberSl: 2, // Defaults to Barun Kumar Paul, changeable by anyone
+      selectedMemberSl: 2,
       categories: getDefaultCategories(),
-      filter: 'all'
+      filter: 'all',
+      activeTab: 'checklist',
+      photos: [
+        { id: 'p1', url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800&auto=format&fit=crop', uploader: 'Prof. Barun Kumar Paul', caption: 'Sikkim Mountains View preview', likes: 3, date: '17 Nov 2026' }
+      ]
     };
 
     function loadState() {
@@ -265,6 +439,7 @@
           const parsed = JSON.parse(saved);
           state.selectedMemberSl = parsed.selectedMemberSl || 2;
           state.categories = parsed.categories || getDefaultCategories();
+          state.photos = parsed.photos || state.photos;
         } catch (e) {
           state.categories = getDefaultCategories();
         }
@@ -274,13 +449,39 @@
       populateRosterModal();
       renderMemberCard();
       renderChecklist();
+      renderGallery();
     }
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         selectedMemberSl: state.selectedMemberSl,
-        categories: state.categories
+        categories: state.categories,
+        photos: state.photos
       }));
+    }
+
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      const chkBtn = document.getElementById('tabChecklistBtn');
+      const galBtn = document.getElementById('tabGalleryBtn');
+      const chkView = document.getElementById('viewChecklist');
+      const galView = document.getElementById('viewGallery');
+      const progressWrap = document.getElementById('checklistProgressWrapper');
+
+      if (tabName === 'checklist') {
+        chkBtn.className = 'px-3 py-2 text-xs font-bold bg-sky-600 text-white rounded-lg shadow-sm transition';
+        galBtn.className = 'px-3 py-2 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition flex items-center gap-1';
+        chkView.classList.remove('hidden');
+        galView.classList.add('hidden');
+        progressWrap.classList.remove('hidden');
+      } else {
+        galBtn.className = 'px-3 py-2 text-xs font-bold bg-sky-600 text-white rounded-lg shadow-sm transition flex items-center gap-1';
+        chkBtn.className = 'px-3 py-2 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition';
+        galView.classList.remove('hidden');
+        chkView.classList.add('hidden');
+        progressWrap.classList.add('hidden');
+        renderGallery();
+      }
     }
 
     function populateMemberDropdown() {
@@ -302,8 +503,7 @@
       const member = tourMembers.find(m => m.sl === Number(state.selectedMemberSl)) || tourMembers[0];
       document.getElementById('progressLabel').textContent = `${member.name}'s Packing Progress`;
 
-      const container = document.getElementById('memberTicketCard');
-      container.innerHTML = `
+      document.getElementById('memberTicketCard').innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="p-3.5 rounded-lg bg-sky-50/70 border border-sky-200">
             <div class="flex justify-between items-center">
@@ -331,22 +531,17 @@
             </div>
           </div>
         </div>
-        ${member.note ? `
-          <div class="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs font-medium">
-            ⚠️ <strong>Personal Alert for ${member.name}:</strong>${member.note}
-          </div>
-        ` : ''}
+        ${member.note ? `<div class="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs font-medium">⚠️ <strong>Note for ${member.name}:</strong>${member.note}</div>` : ''}
       `;
     }
 
     function populateRosterModal() {
-      const tbody = document.getElementById('rosterTableBody');
-      tbody.innerHTML = tourMembers.map(m => `
+      document.getElementById('rosterTableBody').innerHTML = tourMembers.map(m => `
         <tr class="${m.sem === 'Faculty' ? 'bg-sky-50/60 font-medium' : 'hover:bg-slate-50'}">
           <td class="py-2 px-2">${m.sl}</td>
           <td class="py-2 px-2 font-semibold text-slate-800">${m.name}</td>
           <td class="py-2 px-2">${m.sem} (${m.ageSex})</td>
-          <td class="py-2 px-2">${m.mobile}</td>
+          <td class="py-2 px-2">${m.mobile ? `<a href="tel:${m.mobile}" class="text-sky-700 font-mono font-semibold hover:underline">📞 ${m.mobile}</a>` : `<span class="text-rose-600 italic">Update by hand</span>`}</td>
           <td class="py-2 px-2"><span class="font-semibold">${m.onSeat}</span> <span class="text-slate-400">(${m.onPnr})</span></td>
           <td class="py-2 px-2"><span class="font-semibold">${m.retSeat}</span> <span class="text-slate-400">(${m.retPnr})</span></td>
         </tr>
@@ -354,8 +549,7 @@
     }
 
     function populateCategoryDropdown() {
-      const select = document.getElementById('newCategorySelect');
-      select.innerHTML = state.categories
+      document.getElementById('newCategorySelect').innerHTML = state.categories
         .map(cat => `<option value="${cat.id}">${cat.name}</option>`)
         .join('');
     }
@@ -363,8 +557,7 @@
     function setFilter(filterType) {
       state.filter = filterType;
       ['all', 'remaining', 'packed'].forEach(type => {
-        const btn = document.getElementById(`filter-${type}`);
-        btn.className = type === filterType
+        document.getElementById(`filter-${type}`).className = type === filterType
           ? 'px-3 py-2 text-xs font-medium bg-sky-600 text-white'
           : 'px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50';
       });
@@ -408,12 +601,7 @@
 
       const cat = state.categories.find(c => c.id === catId);
       if (cat) {
-        cat.items.push({
-          id: 'custom-' + Date.now(),
-          name,
-          qty: 1,
-          packed: false
-        });
+        cat.items.push({ id: 'custom-' + Date.now(), name, qty: 1, packed: false });
         input.value = '';
         saveState();
         renderChecklist();
@@ -421,7 +609,7 @@
     }
 
     function resetChecklist() {
-      if (confirm('Reset all packing items back to default and clear checkmarks?')) {
+      if (confirm('Reset all packing items back to default?')) {
         state.categories = getDefaultCategories();
         saveState();
         renderChecklist();
@@ -430,6 +618,82 @@
 
     function toggleModal(id) {
       document.getElementById(id).classList.toggle('hidden');
+    }
+
+    function handlePhotoUpload(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('photoFileInput');
+      const urlInput = document.getElementById('photoUrlInput').value.trim();
+      const uploader = document.getElementById('photoUploaderName').value.trim();
+      const caption = document.getElementById('photoCaption').value.trim();
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          addPhotoToState(uploadEvent.target.result, uploader, caption);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else if (urlInput) {
+        addPhotoToState(urlInput, uploader, caption);
+      } else {
+        alert('Please select an image file or enter an image URL.');
+      }
+    }
+
+    function addPhotoToState(url, uploader, caption) {
+      state.photos.unshift({
+        id: 'photo-' + Date.now(),
+        url: url,
+        uploader: uploader,
+        caption: caption,
+        likes: 0,
+        date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })
+      });
+      saveState();
+      toggleModal('uploadPhotoModal');
+      document.getElementById('photoUploaderName').value = '';
+      document.getElementById('photoCaption').value = '';
+      document.getElementById('photoUrlInput').value = '';
+      document.getElementById('photoFileInput').value = '';
+      renderGallery();
+    }
+
+    function likePhoto(photoId) {
+      const p = state.photos.find(x => x.id === photoId);
+      if (p) {
+        p.likes++;
+        saveState();
+        renderGallery();
+      }
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      if (state.photos.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-slate-400">No photos shared yet. Click "Upload New Photo" to share the first memory!</div>`;
+        return;
+      }
+
+      grid.innerHTML = state.photos.map(p => `
+        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-2xs flex flex-col">
+          <div class="h-48 bg-slate-100 overflow-hidden relative">
+            <img src="${p.url}" alt="${p.caption}" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+            <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-black/60 backdrop-blur text-white text-[10px] rounded-md font-medium">${p.date}</span>
+          </div>
+          <div class="p-3.5 flex flex-col flex-1 justify-between gap-2 text-xs">
+            <div>
+              <h4 class="font-bold text-slate-900">${p.caption}</h4>
+              <p class="text-slate-500 text-[11px] mt-0.5">Shared by: <strong class="text-slate-700">${p.uploader}</strong></p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <button onclick="likePhoto('${p.id}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg font-semibold transition flex items-center gap-1">
+                <span>❤️</span> ${p.likes} Likes
+              </button>
+              <a href="${p.url}" target="_blank" class="text-sky-600 hover:underline text-[11px]">View Full Size</a>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
 
     function renderChecklist(triggerConfettiIfDone = false) {
