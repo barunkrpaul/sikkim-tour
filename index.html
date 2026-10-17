@@ -310,7 +310,7 @@
   <div id="lightboxModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
       <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white text-xl font-bold px-3 py-1 bg-white/20 hover:bg-white/40 rounded-full">✕ Close</button>
-      <img id="lightboxImg" src="" alt="Full size preview" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" />
+      <img id="lightboxImg" src="" referrerpolicy="no-referrer" alt="Full size preview" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" />
       <p id="lightboxCaption" class="text-white text-sm mt-3 font-medium text-center"></p>
     </div>
   </div>
@@ -433,6 +433,9 @@
   <!-- JavaScript Application Logic -->
   <script>
     const STORAGE_KEY = 'packmate_sikkim_cs_tour_2026_v10';
+    // Shared photo gallery stored in Google Drive (see gallery-apps-script.gs).
+    // Paste your Apps Script "Web app" URL here after deploying it.
+    const GALLERY_API_URL = 'https://script.google.com/macros/s/AKfycbwBhOheb84TTzpqXLIzj4BMx0N7JWB20W4cZO3scK_BLcTQsAG2ksWcZkJRPPMpOxeQ/exec';
 
     const tourMembers = [
       { sl: 1, name: 'Ujjal Kumar Das', role: 'Faculty/Staff (HOD)', sem: 'Faculty', ageSex: '43/M', mobile: '8250341647', onPnr: '6511081358', onSeat: 'B2-8 (Side Upper)', retPnr: '6211082046', retSeat: 'S2-17 (Lower)', note: '' },
@@ -528,9 +531,8 @@
       selectedMemberSl: 2,
       categories: getDefaultCategories(),
       filter: 'all',
-      photos: [
-        { id: 'p1', url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800&auto=format&fit=crop', uploader: 'Prof. Barun Kumar Paul', caption: 'Himalayan Mountain Vista Preview', likes: 5, date: '17 Nov 2026' }
-      ]
+      photos: [],
+      galleryStatus: 'loading'
     };
 
     function loadState() {
@@ -540,7 +542,6 @@
           const parsed = JSON.parse(saved);
           state.selectedMemberSl = parsed.selectedMemberSl || 2;
           state.categories = parsed.categories || getDefaultCategories();
-          state.photos = parsed.photos || state.photos;
         } catch (e) {
           state.categories = getDefaultCategories();
         }
@@ -551,21 +552,18 @@
       renderMemberCard();
       renderChecklist();
       renderGallery();
+      loadGallery();
     }
 
+    // Photos live in Google Drive, so only the checklist is kept in this browser
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           selectedMemberSl: state.selectedMemberSl,
-          categories: state.categories,
-          photos: state.photos
+          categories: state.categories
         }));
       } catch (err) {
-        console.warn("Storage quota exceeded. Removing oldest uploaded photo to save space.");
-        if (state.photos.length > 1) {
-          state.photos.pop();
-          saveState();
-        }
+        console.warn("Could not save checklist to this browser.", err);
       }
     }
 
@@ -713,7 +711,7 @@
       icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
     }
 
-    // Automatic Image Compression & Resizing before saving to localStorage
+    // Automatic Image Compression & Resizing before uploading to Google Drive
     function handlePhotoUpload(e) {
       e.preventDefault();
       const fileInput = document.getElementById('photoFileInput');
@@ -731,8 +729,8 @@
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 800;
-            const MAX_HEIGHT = 800;
+            const MAX_WIDTH = 1600;
+            const MAX_HEIGHT = 1600;
             let width = img.width;
             let height = img.height;
 
@@ -753,48 +751,86 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Compress to JPEG with 0.7 quality to stay well under 5MB localStorage limit
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-            addPhotoToState(compressedDataUrl, uploader, caption);
-
-            submitBtn.textContent = "Share Photo";
-            submitBtn.disabled = false;
+            // Compress to JPEG with 0.8 quality to keep uploads fast
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            uploadPhoto({ dataUrl: compressedDataUrl, uploader, caption });
+          };
+          img.onerror = function() {
+            alert('Could not read that image. Please try a JPG or PNG photo.');
+            resetUploadButton();
           };
           img.src = uploadEvent.target.result;
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else if (urlInput) {
-        addPhotoToState(urlInput, uploader, caption);
+        submitBtn.textContent = "Saving...";
+        submitBtn.disabled = true;
+        uploadPhoto({ imageUrl: urlInput, uploader, caption });
       } else {
         alert('Please select an image file or provide an image URL.');
       }
     }
 
-    function addPhotoToState(url, uploader, caption) {
-      state.photos.unshift({
-        id: 'photo-' + Date.now(),
-        url: url,
-        uploader: uploader,
-        caption: caption,
-        likes: 0,
-        date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })
-      });
-      saveState();
-      toggleModal('uploadPhotoModal');
-      document.getElementById('photoUploaderName').value = '';
-      document.getElementById('photoCaption').value = '';
-      document.getElementById('photoUrlInput').value = '';
-      document.getElementById('photoFileInput').value = '';
+    function resetUploadButton() {
+      const submitBtn = document.getElementById('uploadSubmitBtn');
+      submitBtn.textContent = "Share Photo";
+      submitBtn.disabled = false;
+    }
+
+    // Sent as text/plain so the browser makes a simple request that Apps Script accepts
+    async function callGalleryApi(payload) {
+      if (!GALLERY_API_URL) throw new Error('Photo gallery is not connected yet (GALLERY_API_URL is empty).');
+      const res = payload
+        ? await fetch(GALLERY_API_URL, { method: 'POST', body: JSON.stringify(payload) })
+        : await fetch(GALLERY_API_URL);
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Gallery request failed');
+      return data.photos;
+    }
+
+    async function loadGallery() {
+      try {
+        state.photos = await callGalleryApi();
+        state.galleryStatus = 'ready';
+      } catch (err) {
+        console.error(err);
+        state.galleryStatus = 'error';
+      }
       renderGallery();
     }
 
-    function likePhoto(photoId) {
-      const p = state.photos.find(x => x.id === photoId);
-      if (p) {
-        p.likes++;
-        saveState();
+    async function uploadPhoto(payload) {
+      try {
+        state.photos = await callGalleryApi({ action: 'upload', ...payload });
+        state.galleryStatus = 'ready';
+        toggleModal('uploadPhotoModal');
+        document.getElementById('photoUploaderName').value = '';
+        document.getElementById('photoCaption').value = '';
+        document.getElementById('photoUrlInput').value = '';
+        document.getElementById('photoFileInput').value = '';
         renderGallery();
+      } catch (err) {
+        alert('Photo was not saved: ' + err.message);
       }
+      resetUploadButton();
+    }
+
+    async function likePhoto(photoId) {
+      const p = state.photos.find(x => x.id === photoId);
+      if (!p) return;
+      p.likes++;
+      renderGallery();
+      try {
+        state.photos = await callGalleryApi({ action: 'like', id: photoId });
+      } catch (err) {
+        p.likes--;
+        alert('Like was not saved: ' + err.message);
+      }
+      renderGallery();
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
 
     function openLightbox(url, caption) {
@@ -809,26 +845,34 @@
 
     function renderGallery() {
       const grid = document.getElementById('galleryGrid');
+      if (state.galleryStatus === 'loading') {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-gray-400">Loading photos...</div>`;
+        return;
+      }
+      if (state.galleryStatus === 'error') {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-rose-600">Could not load photos. Check your internet connection and refresh.</div>`;
+        return;
+      }
       if (state.photos.length === 0) {
         grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-gray-400">No photos shared yet. Be the first to upload a memory!</div>`;
         return;
       }
-      grid.innerHTML = state.photos.map(p => `
+      grid.innerHTML = state.photos.map((p, i) => `
         <div class="bg-ivory rounded-2xl border border-forest/15 overflow-hidden shadow-2xs flex flex-col">
-          <div class="h-52 bg-gray-100 overflow-hidden relative cursor-pointer" onclick="openLightbox('${p.url}', '${p.caption.replace(/'/g, "\\'")}')">
-            <img src="${p.url}" alt="${p.caption}" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
-            <span class="absolute bottom-2 right-2 px-2.5 py-1 bg-charcoal/70 backdrop-blur-xs text-ivory text-[10px] rounded-lg font-medium">${p.date}</span>
+          <div class="h-52 bg-gray-100 overflow-hidden relative cursor-pointer" onclick="openLightbox(state.photos[${i}].url, state.photos[${i}].caption)">
+            <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.caption)}" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+            <span class="absolute bottom-2 right-2 px-2.5 py-1 bg-charcoal/70 backdrop-blur-xs text-ivory text-[10px] rounded-lg font-medium">${escapeHtml(p.date)}</span>
           </div>
           <div class="p-4 flex flex-col flex-1 justify-between gap-3 text-xs">
             <div>
-              <h4 class="font-serif font-bold text-base text-forest">${p.caption}</h4>
-              <p class="text-gray-500 text-[11px] mt-0.5">Shared by: <strong class="text-charcoal">${p.uploader}</strong></p>
+              <h4 class="font-serif font-bold text-base text-forest">${escapeHtml(p.caption)}</h4>
+              <p class="text-gray-500 text-[11px] mt-0.5">Shared by: <strong class="text-charcoal">${escapeHtml(p.uploader)}</strong></p>
             </div>
             <div class="pt-3 border-t border-forest/10 flex items-center justify-between">
-              <button onclick="likePhoto('${p.id}')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-semibold transition flex items-center gap-1">
-                <span>❤️</span> ${p.likes} Likes
+              <button onclick="likePhoto(state.photos[${i}].id)" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-semibold transition flex items-center gap-1">
+                <span>❤️</span> ${Number(p.likes) || 0} Likes
               </button>
-              <button onclick="openLightbox('${p.url}', '${p.caption.replace(/'/g, "\\'")}')" class="text-himalaya hover:underline font-semibold text-[11px]">View Full Size</button>
+              <button onclick="openLightbox(state.photos[${i}].url, state.photos[${i}].caption)" class="text-himalaya hover:underline font-semibold text-[11px]">View Full Size</button>
             </div>
           </div>
         </div>
