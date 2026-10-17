@@ -311,7 +311,9 @@
     <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
       <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white text-xl font-bold px-3 py-1 bg-white/20 hover:bg-white/40 rounded-full">✕ Close</button>
       <img id="lightboxImg" src="" referrerpolicy="no-referrer" alt="Full size preview" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" />
+      <iframe id="lightboxPdf" src="" title="PDF preview" class="hidden w-[90vw] max-w-4xl h-[75vh] bg-white rounded-xl shadow-2xl"></iframe>
       <p id="lightboxCaption" class="text-white text-sm mt-3 font-medium text-center"></p>
+      <a id="lightboxOpenLink" href="#" target="_blank" rel="noopener" class="text-amber text-xs mt-1 hover:underline">Open in Google Drive ↗</a>
     </div>
   </div>
 
@@ -403,15 +405,22 @@
 
   <!-- Upload Photo Modal with Automatic Compression -->
   <div id="uploadPhotoModal" class="fixed inset-0 z-50 hidden bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+    <div class="bg-white rounded-2xl max-w-md w-full max-h-[92vh] overflow-y-auto p-6 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b border-forest/10 pb-3">
         <h3 class="font-serif font-bold text-charcoal text-base">Share Tour Memory</h3>
         <button onclick="toggleModal('uploadPhotoModal')" class="text-gray-400 hover:text-charcoal font-bold">✕</button>
       </div>
       <form onsubmit="handlePhotoUpload(event)" class="space-y-3.5 text-xs">
         <div>
-          <label class="block font-semibold text-charcoal mb-1">Select Image File or Paste URL:</label>
-          <input type="file" id="photoFileInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-forest/10 file:text-forest hover:file:bg-forest/20 mb-2" />
+          <label class="block font-semibold text-charcoal mb-1">Photos or PDFs:</label>
+          <label id="photoDropZone" for="photoFileInput" class="block cursor-pointer rounded-xl border-2 border-dashed border-forest/30 bg-ivory px-4 py-6 text-center transition hover:border-forest hover:bg-forest/5">
+            <span class="block text-2xl">📤</span>
+            <span class="block font-semibold text-forest mt-1">Drag &amp; drop files here, or tap to choose</span>
+            <span class="block text-[11px] text-gray-500 mt-0.5">JPG, PNG, WebP, GIF, HEIC or PDF &bull; select many at once &bull; you can also paste a screenshot</span>
+          </label>
+          <input type="file" id="photoFileInput" accept="image/*,.heic,.heif,application/pdf,.pdf" multiple class="hidden" />
+          <ul id="selectedFilesList" class="mt-2 space-y-1"></ul>
+          <label class="block font-semibold text-charcoal mt-3 mb-1">Or paste an image URL:</label>
           <input type="url" id="photoUrlInput" placeholder="https://images.unsplash.com/photo-..." class="w-full px-3.5 py-2.5 bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest" />
         </div>
         <div>
@@ -711,70 +720,160 @@
       icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
     }
 
-    // Automatic Image Compression & Resizing before uploading to Google Drive
-    function handlePhotoUpload(e) {
+    // ---------- Upload: drag & drop, multiple files, photos and PDFs ----------
+    const MAX_UPLOAD_MB = 20;
+    let selectedFiles = [];
+
+    function fileMimeType(file) {
+      if (file.type) return file.type;
+      if (/\.pdf$/i.test(file.name)) return 'application/pdf';
+      if (/\.(heic|heif)$/i.test(file.name)) return 'image/heic';
+      return '';
+    }
+
+    function addSelectedFiles(fileList) {
+      const files = Array.from(fileList);
+      const accepted = files.filter(f => /^(image\/|application\/pdf$)/.test(fileMimeType(f)));
+      const skipped = files.filter(f => !accepted.includes(f));
+      selectedFiles = selectedFiles.concat(accepted);
+      if (skipped.length) alert('Only photos and PDFs can be shared. Skipped: ' + skipped.map(f => f.name).join(', '));
+      renderSelectedFiles();
+    }
+
+    function removeSelectedFile(index) {
+      selectedFiles.splice(index, 1);
+      renderSelectedFiles();
+    }
+
+    function renderSelectedFiles() {
+      document.getElementById('selectedFilesList').innerHTML = selectedFiles.map((f, i) => `
+        <li class="flex items-center gap-2 px-3 py-1.5 bg-forest/5 rounded-lg">
+          <span>${fileMimeType(f) === 'application/pdf' ? '📄' : '🖼️'}</span>
+          <span class="flex-1 truncate text-charcoal">${escapeHtml(f.name)}</span>
+          <span class="text-gray-400 text-[10px]">${(f.size / 1048576).toFixed(1)} MB</span>
+          <button type="button" onclick="removeSelectedFile(${i})" title="Remove" class="text-gray-400 hover:text-rose-600 font-bold px-1">✕</button>
+        </li>
+      `).join('');
+      const submitBtn = document.getElementById('uploadSubmitBtn');
+      if (!submitBtn.disabled) submitBtn.textContent = selectedFiles.length > 1 ? `Share ${selectedFiles.length} Files` : 'Share Photo';
+    }
+
+    function setupUploadInputs() {
+      const zone = document.getElementById('photoDropZone');
+      const input = document.getElementById('photoFileInput');
+      input.addEventListener('change', () => {
+        addSelectedFiles(input.files);
+        input.value = '';
+      });
+      ['dragenter', 'dragover'].forEach(type => zone.addEventListener(type, e => {
+        e.preventDefault();
+        zone.classList.add('border-forest', 'bg-forest/10');
+      }));
+      ['dragleave', 'drop'].forEach(type => zone.addEventListener(type, e => {
+        e.preventDefault();
+        zone.classList.remove('border-forest', 'bg-forest/10');
+      }));
+      zone.addEventListener('drop', e => addSelectedFiles(e.dataTransfer.files));
+      // Paste a screenshot or copied photo while the upload box is open
+      document.addEventListener('paste', e => {
+        if (document.getElementById('uploadPhotoModal').classList.contains('hidden')) return;
+        const files = Array.from(e.clipboardData.files || []);
+        if (files.length) {
+          e.preventDefault();
+          addSelectedFiles(files);
+        }
+      });
+    }
+
+    function readAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Could not read the file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('Browser cannot open this image'));
+        img.src = src;
+      });
+    }
+
+    // Photos are resized to max 1600px JPEG; PDFs, GIFs and images the browser can't open (e.g. HEIC) are sent as-is
+    async function prepareFile(file) {
+      const mime = fileMimeType(file);
+      const original = (await readAsDataUrl(file)).replace(/^data:[^;,]*/, 'data:' + mime);
+      if (mime !== 'application/pdf' && mime !== 'image/gif') {
+        try {
+          const img = await loadImage(original);
+          const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff'; // transparent PNGs get a white background instead of black
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          return canvas.toDataURL('image/jpeg', 0.8);
+        } catch (err) {
+          // fall through and upload the original file
+        }
+      }
+      if (file.size > MAX_UPLOAD_MB * 1048576) throw new Error(`File is larger than ${MAX_UPLOAD_MB} MB`);
+      return original;
+    }
+
+    async function handlePhotoUpload(e) {
       e.preventDefault();
-      const fileInput = document.getElementById('photoFileInput');
       const urlInput = document.getElementById('photoUrlInput').value.trim();
       const uploader = document.getElementById('photoUploaderName').value.trim();
       const caption = document.getElementById('photoCaption').value.trim();
       const submitBtn = document.getElementById('uploadSubmitBtn');
 
-      if (fileInput.files && fileInput.files[0]) {
-        submitBtn.textContent = "Compressing & Saving...";
-        submitBtn.disabled = true;
+      const jobs = selectedFiles.map(file => ({ file }));
+      if (urlInput) jobs.push({ url: urlInput });
+      if (!jobs.length) {
+        alert('Please choose or drop a photo/PDF, or paste an image URL.');
+        return;
+      }
 
-        const reader = new FileReader();
-        reader.onload = function(uploadEvent) {
-          const img = new Image();
-          img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 1600;
-            const MAX_HEIGHT = 1600;
-            let width = img.width;
-            let height = img.height;
+      submitBtn.disabled = true;
+      const failed = [];
+      for (let i = 0; i < jobs.length; i++) {
+        submitBtn.textContent = `Uploading ${i + 1} of ${jobs.length}...`;
+        const job = jobs[i];
+        try {
+          const payload = job.file
+            ? { dataUrl: await prepareFile(job.file), fileName: job.file.name }
+            : { imageUrl: job.url };
+          state.photos = await callGalleryApi({ action: 'upload', uploader, caption, ...payload });
+          state.galleryStatus = 'ready';
+          renderGallery();
+        } catch (err) {
+          failed.push({ job, message: err.message });
+        }
+      }
 
-            if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-              }
-            } else {
-              if (height > MAX_HEIGHT) {
-                width *= MAX_HEIGHT / height;
-                height = MAX_HEIGHT;
-              }
-            }
+      // Keep only the files that failed so the user can retry them
+      selectedFiles = failed.filter(f => f.job.file).map(f => f.job.file);
+      if (!failed.some(f => f.job.url)) document.getElementById('photoUrlInput').value = '';
+      resetUploadButton();
 
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // Compress to JPEG with 0.8 quality to keep uploads fast
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
-            uploadPhoto({ dataUrl: compressedDataUrl, uploader, caption });
-          };
-          img.onerror = function() {
-            alert('Could not read that image. Please try a JPG or PNG photo.');
-            resetUploadButton();
-          };
-          img.src = uploadEvent.target.result;
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      } else if (urlInput) {
-        submitBtn.textContent = "Saving...";
-        submitBtn.disabled = true;
-        uploadPhoto({ imageUrl: urlInput, uploader, caption });
+      if (failed.length) {
+        alert('These were not saved:\n' + failed.map(f => `• ${f.job.file ? f.job.file.name : f.job.url}: ${f.message}`).join('\n'));
       } else {
-        alert('Please select an image file or provide an image URL.');
+        toggleModal('uploadPhotoModal');
+        document.getElementById('photoCaption').value = '';
       }
     }
 
     function resetUploadButton() {
-      const submitBtn = document.getElementById('uploadSubmitBtn');
-      submitBtn.textContent = "Share Photo";
-      submitBtn.disabled = false;
+      document.getElementById('uploadSubmitBtn').disabled = false;
+      renderSelectedFiles();
     }
 
     // Sent as text/plain so the browser makes a simple request that Apps Script accepts
@@ -799,22 +898,6 @@
       renderGallery();
     }
 
-    async function uploadPhoto(payload) {
-      try {
-        state.photos = await callGalleryApi({ action: 'upload', ...payload });
-        state.galleryStatus = 'ready';
-        toggleModal('uploadPhotoModal');
-        document.getElementById('photoUploaderName').value = '';
-        document.getElementById('photoCaption').value = '';
-        document.getElementById('photoUrlInput').value = '';
-        document.getElementById('photoFileInput').value = '';
-        renderGallery();
-      } catch (err) {
-        alert('Photo was not saved: ' + err.message);
-      }
-      resetUploadButton();
-    }
-
     async function likePhoto(photoId) {
       const p = state.photos.find(x => x.id === photoId);
       if (!p) return;
@@ -833,14 +916,23 @@
       return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
 
-    function openLightbox(url, caption) {
-      document.getElementById('lightboxImg').src = url;
-      document.getElementById('lightboxCaption').textContent = caption;
+    function openLightbox(index) {
+      const p = state.photos[index];
+      const isPdf = p.type === 'pdf';
+      const img = document.getElementById('lightboxImg');
+      const pdf = document.getElementById('lightboxPdf');
+      img.classList.toggle('hidden', isPdf);
+      pdf.classList.toggle('hidden', !isPdf);
+      img.src = isPdf ? '' : p.url;
+      pdf.src = isPdf ? `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/preview` : '';
+      document.getElementById('lightboxOpenLink').href = `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/view`;
+      document.getElementById('lightboxCaption').textContent = p.caption;
       document.getElementById('lightboxModal').classList.remove('hidden');
     }
 
     function closeLightbox() {
       document.getElementById('lightboxModal').classList.add('hidden');
+      document.getElementById('lightboxPdf').src = '';
     }
 
     function renderGallery() {
@@ -859,8 +951,10 @@
       }
       grid.innerHTML = state.photos.map((p, i) => `
         <div class="bg-ivory rounded-2xl border border-forest/15 overflow-hidden shadow-2xs flex flex-col">
-          <div class="h-52 bg-gray-100 overflow-hidden relative cursor-pointer" onclick="openLightbox(state.photos[${i}].url, state.photos[${i}].caption)">
-            <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.caption)}" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+          <div class="h-52 bg-gray-100 overflow-hidden relative cursor-pointer" onclick="openLightbox(${i})">
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 text-xs"><span class="text-4xl">${p.type === 'pdf' ? '📄' : '🖼️'}</span>Preview loading...</div>
+            <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.caption)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" class="relative w-full h-full object-cover hover:scale-105 transition duration-300" />
+            ${p.type === 'pdf' ? `<span class="absolute top-2 left-2 px-2.5 py-1 bg-rose-600 text-white text-[10px] rounded-lg font-bold">PDF</span>` : ''}
             <span class="absolute bottom-2 right-2 px-2.5 py-1 bg-charcoal/70 backdrop-blur-xs text-ivory text-[10px] rounded-lg font-medium">${escapeHtml(p.date)}</span>
           </div>
           <div class="p-4 flex flex-col flex-1 justify-between gap-3 text-xs">
@@ -872,7 +966,7 @@
               <button onclick="likePhoto(state.photos[${i}].id)" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-semibold transition flex items-center gap-1">
                 <span>❤️</span> ${Number(p.likes) || 0} Likes
               </button>
-              <button onclick="openLightbox(state.photos[${i}].url, state.photos[${i}].caption)" class="text-himalaya hover:underline font-semibold text-[11px]">View Full Size</button>
+              <button onclick="openLightbox(${i})" class="text-himalaya hover:underline font-semibold text-[11px]">${p.type === 'pdf' ? 'Open PDF' : 'View Full Size'}</button>
             </div>
           </div>
         </div>
@@ -960,7 +1054,10 @@
       }).join('');
     }
 
-    window.addEventListener('DOMContentLoaded', loadState);
+    window.addEventListener('DOMContentLoaded', () => {
+      setupUploadInputs();
+      loadState();
+    });
   </script>
 </body>
 </html>

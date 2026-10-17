@@ -1,7 +1,7 @@
 /**
  * Sikkim Tour Photo Gallery — Google Apps Script backend.
  *
- * Photos are saved as image files in the Google Drive folder below.
+ * Photos and PDFs are saved as files in the Google Drive folder below.
  * Each file's description holds its caption, uploader, likes and date as JSON.
  *
  * Setup: script.google.com → New project → paste this file →
@@ -9,7 +9,8 @@
  * copy the Web app URL into GALLERY_API_URL in index.html.
  */
 const FOLDER_ID = '1UIJHap4MtmpyN4ynVB84GftdsqUMnVwv'; // "Sikkim Tour Photos" folder
-const MAX_BYTES = 4 * 1024 * 1024;
+const MAX_BYTES = 20 * 1024 * 1024;
+const ALLOWED_TYPE = /^(image\/[\w+.-]+|application\/pdf)$/;
 
 function doGet() {
   return json({ ok: true, photos: listPhotos() });
@@ -37,8 +38,9 @@ function doPost(e) {
 
 function uploadPhoto(req) {
   let blob;
-  const m = String(req.dataUrl || '').match(/^data:(image\/[\w+.-]+);base64,(.+)$/);
+  const m = String(req.dataUrl || '').match(/^data:([\w+.\/-]+);base64,(.+)$/);
   if (m) {
+    if (!ALLOWED_TYPE.test(m[1])) throw new Error('Only photos and PDFs are allowed');
     blob = Utilities.newBlob(Utilities.base64Decode(m[2]), m[1]);
   } else if (/^https?:\/\//.test(req.imageUrl || '')) {
     // Copy the linked image into Drive so it keeps working even if the link dies
@@ -47,9 +49,10 @@ function uploadPhoto(req) {
   } else {
     throw new Error('No image received');
   }
-  if (blob.getBytes().length > MAX_BYTES) throw new Error('Image is too large (max 4 MB)');
+  if (blob.getBytes().length > MAX_BYTES) throw new Error('File is too large (max 20 MB)');
 
-  blob.setName('photo-' + Date.now());
+  const name = clean(req.fileName).replace(/[\\/:*?"<>|]/g, '_');
+  blob.setName(Date.now() + '-' + (name || 'photo'));
   const file = getFolder().createFile(blob);
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   file.setDescription(JSON.stringify({
@@ -79,10 +82,11 @@ function listPhotos() {
   const files = getFolder().getFiles();
   while (files.hasNext()) {
     const file = files.next();
-    if (!/^image\//.test(file.getMimeType()) || file.isTrashed()) continue;
+    if (!ALLOWED_TYPE.test(file.getMimeType()) || file.isTrashed()) continue;
     const meta = readMeta(file);
     photos.push({
       id: file.getId(),
+      type: file.getMimeType() === 'application/pdf' ? 'pdf' : 'image',
       url: 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w1600',
       uploader: meta.uploader || 'Unknown',
       caption: meta.caption || file.getName(),
