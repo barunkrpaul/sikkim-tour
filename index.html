@@ -401,7 +401,7 @@
     </div>
   </div>
 
-  <!-- Upload Photo Modal -->
+  <!-- Upload Photo Modal with Automatic Compression -->
   <div id="uploadPhotoModal" class="fixed inset-0 z-50 hidden bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 no-print">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b border-forest/10 pb-3">
@@ -424,7 +424,7 @@
         </div>
         <div class="pt-2 flex justify-end gap-2">
           <button type="button" onclick="toggleModal('uploadPhotoModal')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-charcoal rounded-xl font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-forest hover:bg-forest/90 text-ivory rounded-xl font-semibold">Share Photo</button>
+          <button type="submit" id="uploadSubmitBtn" class="px-4 py-2 bg-forest hover:bg-forest/90 text-ivory rounded-xl font-semibold">Share Photo</button>
         </div>
       </form>
     </div>
@@ -432,7 +432,7 @@
 
   <!-- JavaScript Application Logic -->
   <script>
-    const STORAGE_KEY = 'packmate_sikkim_cs_tour_2026_v9';
+    const STORAGE_KEY = 'packmate_sikkim_cs_tour_2026_v10';
 
     const tourMembers = [
       { sl: 1, name: 'Ujjal Kumar Das', role: 'Faculty/Staff (HOD)', sem: 'Faculty', ageSex: '43/M', mobile: '8250341647', onPnr: '6511081358', onSeat: 'B2-8 (Side Upper)', retPnr: '6211082046', retSeat: 'S2-17 (Lower)', note: '' },
@@ -554,11 +554,19 @@
     }
 
     function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        selectedMemberSl: state.selectedMemberSl,
-        categories: state.categories,
-        photos: state.photos
-      }));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          selectedMemberSl: state.selectedMemberSl,
+          categories: state.categories,
+          photos: state.photos
+        }));
+      } catch (err) {
+        console.warn("Storage quota exceeded. Removing oldest uploaded photo to save space.");
+        if (state.photos.length > 1) {
+          state.photos.pop();
+          saveState();
+        }
+      }
     }
 
     function populateMemberDropdown() {
@@ -705,17 +713,54 @@
       icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
     }
 
+    // Automatic Image Compression & Resizing before saving to localStorage
     function handlePhotoUpload(e) {
       e.preventDefault();
       const fileInput = document.getElementById('photoFileInput');
       const urlInput = document.getElementById('photoUrlInput').value.trim();
       const uploader = document.getElementById('photoUploaderName').value.trim();
       const caption = document.getElementById('photoCaption').value.trim();
+      const submitBtn = document.getElementById('uploadSubmitBtn');
 
       if (fileInput.files && fileInput.files[0]) {
+        submitBtn.textContent = "Compressing & Saving...";
+        submitBtn.disabled = true;
+
         const reader = new FileReader();
         reader.onload = function(uploadEvent) {
-          addPhotoToState(uploadEvent.target.result, uploader, caption);
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Compress to JPEG with 0.7 quality to stay well under 5MB localStorage limit
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            addPhotoToState(compressedDataUrl, uploader, caption);
+
+            submitBtn.textContent = "Share Photo";
+            submitBtn.disabled = false;
+          };
+          img.src = uploadEvent.target.result;
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else if (urlInput) {
