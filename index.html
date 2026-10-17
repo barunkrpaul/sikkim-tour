@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PackMate • Srikrishna College CS Tour to Sikkim (Nov 2026)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .custom-checkbox:checked + div {
+      background-color: #0284c7;
+      border-color: #0284c7;
+    }
+    .custom-checkbox:checked + div svg {
+      display: block;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background-color: white;
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-800 pb-16">
+
+  <!-- Sticky Header & Overall Completion Bar -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 text-xs font-semibold bg-sky-100 text-sky-800 rounded-full">Dept. of Computer Science • Srikrishna College, Bagula</span>
+            <span class="px-2.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800 rounded-full">22 Members (5 Faculty, 17 Students)</span>
+          </div>
+          <h1 class="text-xl md:text-2xl font-bold text-slate-900 mt-1">
+            Sikkim Educational Tour: Ravangla, Pelling & Namchi
+          </h1>
+          <p class="text-xs md:text-sm text-slate-500">
+            Onward: 17 Nov 2026 (Bandel Jn, 18:58) • Tour: 18–21 Nov 2026 • Return Arrival: 22 Nov 2026 (Sealdah, 03:35)
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 no-print">
+          <button onclick="toggleModal('rosterModal')" class="px-3 py-2 text-xs font-semibold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg transition">
+            Full Group & Berth List (22)
+          </button>
+          <button onclick="window.print()" class="px-3 py-2 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition">
+            Print
+          </button>
+          <button onclick="resetChecklist()" class="px-3 py-2 text-xs font-medium bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg transition">
+            Reset List
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mt-4">
+        <div class="flex justify-between items-center text-xs font-semibold mb-1.5">
+          <span id="progressLabel" class="text-slate-600 uppercase tracking-wider">Your Packing Progress</span>
+          <span id="progressStats" class="text-sky-700 font-bold text-sm">0 / 0 Packed (0%)</span>
+        </div>
+        <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+          <div id="overallBar" class="h-full bg-gradient-to-r from-sky-500 to-emerald-500 transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
+
+    <!-- Member Selector & Personalized Train Ticket Card -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
+          <label for="memberSelect" class="text-xs font-bold uppercase tracking-wider text-sky-800 shrink-0">
+            Select Tour Member:
+          </label>
+          <select id="memberSelect" onchange="selectMember(this.value)" class="w-full sm:w-80 px-3 py-2 text-sm font-semibold bg-sky-50 border border-sky-300 text-slate-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+        </div>
+        <div class="text-xs text-slate-500">
+          Tour Coordinator: <strong class="text-slate-800">Prof. Ujjal Kumar Das</strong> (<a href="tel:8250341647" class="text-sky-600 underline">8250341647</a>)
+        </div>
+      </div>
+
+      <!-- Selected Member Ticket Details -->
+      <div id="memberTicketCard"></div>
+
+      <!-- Important Group Notice -->
+      <div class="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-900 rounded-lg px-3 py-2.5 space-y-1">
+        <div>
+          <strong>Important ID Rule:</strong> Original Govt. Photo ID + College ID is mandatory on the train and at Sikkim checkposts.
+        </div>
+        <div>
+          <strong>Name Spelling Note:</strong> <strong>Pratap Paul</strong> (printed as <em>PRATAP PAL</em> on return PNR 6511082206), <strong>Soyon Das</strong> (<em>SHOYON DAS</em> on onward PNR 6511081358), <strong>Bikram Saha</strong>, and <strong>Jayita Tikadar</strong> must carry original photo ID matching their records.
+        </div>
+      </div>
+    </section>
+
+    <!-- Search, Filter & Add Custom Item -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 no-print">
+      <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="flex flex-1 w-full gap-2">
+          <input id="searchInput" type="text" placeholder="Search items (e.g., ID, jacket, blanket, power bank)..." oninput="renderChecklist()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <div class="flex rounded-lg border border-slate-300 overflow-hidden shrink-0">
+            <button onclick="setFilter('all')" id="filter-all" class="px-3 py-2 text-xs font-medium bg-sky-600 text-white">All</button>
+            <button onclick="setFilter('remaining')" id="filter-remaining" class="px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50">Remaining</button>
+            <button onclick="setFilter('packed')" id="filter-packed" class="px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50">Packed</button>
+          </div>
+        </div>
+
+        <form onsubmit="addItem(event)" class="flex w-full md:w-auto gap-2">
+          <select id="newCategorySelect" class="px-3 py-2 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          <input id="newItemInput" type="text" placeholder="Add personal item..." required class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg shrink-0 transition">
+            + Add
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Checklist Categories Grid -->
+    <section id="categoriesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></section>
+
+  </main>
+
+  <!-- Full 22-Member Group Roster Modal -->
+  <div id="rosterModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center">
+        <div>
+          <h3 class="font-bold text-slate-900">Srikrishna College CS Tour • Confirmed Berth & PNR List (22 Members)</h3>
+          <p class="text-xs text-slate-500">Onward (17 Nov): 27575 Vande Bharat SL (Coach B2, 3A) • Return (21 Nov): 13142 Teesta Torsha (Coach S2, SL)</p>
+        </div>
+        <button onclick="toggleModal('rosterModal')" class="text-slate-400 hover:text-slate-600 text-sm font-bold px-2 py-1">✕ Close</button>
+      </div>
+      <div class="p-4 overflow-y-auto text-xs">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+              <th class="py-2 px-2">#</th>
+              <th class="py-2 px-2">Name</th>
+              <th class="py-2 px-2">Category</th>
+              <th class="py-2 px-2">Mobile</th>
+              <th class="py-2 px-2">Onward Seat (Coach B2)</th>
+              <th class="py-2 px-2">Return Seat (Coach S2)</th>
+            </tr>
+          </thead>
+          <tbody id="rosterTableBody" class="divide-y divide-slate-200"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'packmate_sikkim_group_2026_v2';
+
+    const tourMembers = [
+      { sl: 1, name: 'Ujjal Kumar Das', role: 'Faculty/Staff (HOD)', sem: 'Faculty', ageSex: '43/M', mobile: '8250341647', onPnr: '6511081358', onSeat: 'B2-8 (Side Upper)', retPnr: '6211082046', retSeat: 'S2-17 (Lower)', note: '' },
+      { sl: 2, name: 'Barun Kumar Paul', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '35/M', mobile: '7501106583', onPnr: '6511081358', onSeat: 'B2-2 (Middle)', retPnr: '6211082046', retSeat: 'S2-18 (Middle)', note: '' },
+      { sl: 3, name: 'Ashraful Islam', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '32/M', mobile: '8926612351', onPnr: '6511081358', onSeat: 'B2-67 (Upper)', retPnr: '6211082046', retSeat: 'S2-19 (Upper)', note: '' },
+      { sl: 4, name: 'Rupa D Banerjee', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '50/F', mobile: '9830607334', onPnr: '6511081358', onSeat: 'B2-3 (Upper)', retPnr: '6211082046', retSeat: 'S2-20 (Lower)', note: '' },
+      { sl: 5, name: 'S Dutta', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '32/F', mobile: '8768434156', onPnr: '6511081358', onSeat: 'B2-5 (Middle)', retPnr: '6211082046', retSeat: 'S2-21 (Middle)', note: '' },
+      { sl: 6, name: 'Jayita Tikadar', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '7811886916', onPnr: '6511080813', onSeat: 'B2-66 (Middle)', retPnr: '6411082334', retSeat: 'S2-62 (Upper)', note: 'Name printed as JAYITA TIKADAR on tickets. Carry original photo ID.' },
+      { sl: 7, name: 'Diya Ghosh', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '6295134819', onPnr: '6511080813', onSeat: 'B2-10 (Middle)', retPnr: '6411082334', retSeat: 'S2-58 (Middle)', note: '' },
+      { sl: 8, name: 'Pratap Paul', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9749411478', onPnr: '6211081808', onSeat: 'B2-61 (Middle)', retPnr: '6511082206', retSeat: 'S2-9 (Lower)', note: 'Printed as PRATAP PAL on Return PNR 6511082206. Carry original photo ID.' },
+      { sl: 9, name: 'Arupan Kr Biswas', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9382185857', onPnr: '6511080813', onSeat: 'B2-14 (Upper)', retPnr: '6411082334', retSeat: 'S2-61 (Middle)', note: '' },
+      { sl: 10, name: 'Nilesh Pal', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '8101496394', onPnr: '6511080813', onSeat: 'B2-11 (Upper)', retPnr: '6411082334', retSeat: 'S2-59 (Upper)', note: '' },
+      { sl: 11, name: 'Surya Das', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9378160982', onPnr: '6311081463', onSeat: 'B2-19 (Upper)', retPnr: '6111082120', retSeat: 'S2-2 (Middle)', note: '' },
+      { sl: 12, name: 'Bhupati Mollick', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8250911596', onPnr: '6211081808', onSeat: 'B2-62 (Upper)', retPnr: '6511082206', retSeat: 'S2-12 (Lower)', note: '' },
+      { sl: 13, name: 'Rahul Biswas', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8670966550', onPnr: '6211081808', onSeat: 'B2-54 (Upper)', retPnr: '6511082206', retSeat: 'S2-13 (Middle)', note: '' },
+      { sl: 14, name: 'Dipendu Sadhukan', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '9735659316', onPnr: '6211081808', onSeat: 'B2-51 (Upper)', retPnr: '6511082206', retSeat: 'S2-11 (Upper)', note: '' },
+      { sl: 15, name: 'Joy Biswas', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8670666864', onPnr: '6311081900', onSeat: 'B2-22 (Upper)', retPnr: '6111082120', retSeat: 'S2-4 (Lower)', note: '' },
+      { sl: 16, name: 'Bibhan Majumder', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '6295013578', onPnr: '6211081808', onSeat: 'B2-53 (Middle)', retPnr: '6511082206', retSeat: 'S2-14 (Upper)', note: '' },
+      { sl: 17, name: 'Bikram Saha', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '7318944470', onPnr: '6311081463', onSeat: 'B2-21 (Middle)', retPnr: '6111082120', retSeat: 'S2-1 (Lower)', note: 'Name printed as BIKRAM SAHA on tickets. Carry original photo ID.' },
+      { sl: 18, name: 'Sudip Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7501118644', onPnr: '6311081463', onSeat: 'B2-18 (Middle)', retPnr: '6111082120', retSeat: 'S2-8 (Side Upper)', note: '' },
+      { sl: 19, name: 'Soyon Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7865004293', onPnr: '6511081358', onSeat: 'B2-6 (Upper)', retPnr: '6211082046', retSeat: 'S2-22 (Upper)', note: 'Printed as SHOYON DAS (Age 22) on Onward PNR 6511081358. Carry original photo ID.' },
+      { sl: 20, name: 'Srija Biswas', role: 'Student', sem: '7th Sem', ageSex: '21/F', mobile: '7908137501', onPnr: '6511080813', onSeat: 'B2-13 (Middle)', retPnr: '6411082334', retSeat: 'S2-57 (Lower)', note: '' },
+      { sl: 21, name: 'Nipobithi Roy', role: 'Student', sem: '7th Sem', ageSex: '21/F', mobile: '9832360055', onPnr: '6511080813', onSeat: 'B2-16 (Side Upper)', retPnr: '6411082334', retSeat: 'S2-60 (Lower)', note: '' },
+      { sl: 22, name: 'Sajib Mondal', role: 'Student', sem: 'Update Sem', ageSex: '19/M', mobile: 'Update Mobile No.', onPnr: '6211081808', onSeat: 'B2-50 (Middle)', retPnr: '6511082206', retSeat: 'S2-10 (Middle)', note: 'Please give your mobile number and semester to Prof. Ujjal Kumar Das before departure.' }
+    ];
+
+    function getDefaultCategories() {
+      return [
+        {
+          id: 'docs-tickets',
+          name: '1. Mandatory IDs, Tickets & Cash',
+          items: [
+            { id: 'd1', name: 'Original Govt. Photo ID (Voter ID / Aadhaar / PAN / Driving License)', qty: 1, packed: false },
+            { id: 'd2', name: 'Srikrishna College Identity Card (Mandatory for all students & faculty)', qty: 1, packed: false },
+            { id: 'd3', name: 'Photocopies of Photo ID & 2 Passport-Size Photos (for Sikkim permits/hotels)', qty: 2, packed: false },
+            { id: 'd4', name: 'Digital/Printed Train Tickets (Coach B2 Onward & Coach S2 Return)', qty: 1, packed: false },
+            { id: 'd5', name: 'Printed Principal Approval Letter & 22-Member Roster (Faculty Coordinators)', qty: 1, packed: false },
+            { id: 'd6', name: 'Cash in Small Denominations (for Ravangla, Pelling & Namchi local stalls) + UPI', qty: 1, packed: false }
+          ]
+        },
+        {
+          id: 'winter-clothing',
+          name: '2. Sikkim Winter Clothing (4°C to 12°C)',
+          items: [
+            { id: 'w1', name: 'Heavy Down Jacket / Windproof Winter Jacket', qty: 1, packed: false },
+            { id: 'w2', name: 'Thermal Innerwear Sets (Upper & Lower)', qty: 2, packed: false },
+            { id: 'w3', name: 'Sweaters / Fleece Hoodies / Pullovers', qty: 2, packed: false },
+            { id: 'w4', name: 'Daytime T-Shirts / Shirts / Kurtas & Jeans / Trousers', qty: 4, packed: false },
+            { id: 'w5', name: 'Light Blanket / Warm Shawl (Mandatory for Return Non-AC Sleeper Coach S2)', qty: 1, packed: false },
+            { id: 'w6', name: 'Woolen Cap (Beanie), Muffler & Warm Gloves', qty: 1, packed: false },
+            { id: 'w7', name: 'Woolen & Cotton Socks', qty: 4, packed: false },
+            { id: 'w8', name: 'Comfortable Walking Sneakers/Shoes + Room Slippers', qty: 2, packed: false }
+          ]
+        },
+        {
+          id: 'electronics',
+          name: '3. Electronics & Power Backup',
+          items: [
+            { id: 'e1', name: 'Smartphone + Wall Charger & Charging Cable', qty: 1, packed: false },
+            { id: 'e2', name: 'Power Bank (10,000mAh–20,000mAh for long train & hill road journeys)', qty: 1, packed: false },
+            { id: 'e3', name: '3-Pin Multi-Plug Splitter (for shared train charging sockets in B2 & S2)', qty: 1, packed: false },
+            { id: 'e4', name: 'Earphones / Headphones', qty: 1, packed: false },
+            { id: 'e5', name: 'iPad / Tablet / Camera (Optional)', qty: 1, packed: false }
+          ]
+        },
+        {
+          id: 'toiletries',
+          name: '4. Toiletries & Mountain Skincare',
+          items: [
+            { id: 't1', name: 'Cold Cream / Moisturizing Lotion & Lip Balm (for dry hill weather)', qty: 1, packed: false },
+            { id: 't2', name: 'Face Wash, Sunscreen & Face Mist', qty: 1, packed: false },
+            { id: 't3', name: 'Toothbrush, Toothpaste, Comb & Deodorant', qty: 1, packed: false },
+            { id: 't4', name: 'Paper Soap, Pocket Hand Sanitizer & Wet Wipes (for train journey)', qty: 2, packed: false },
+            { id: 't5', name: 'Quick-Dry Towel', qty: 1, packed: false }
+          ]
+        },
+        {
+          id: 'health-train',
+          name: '5. Hill Medicines & Train Essentials',
+          items: [
+            { id: 'h1', name: 'Motion Sickness Medicine (Avomine/Ondansetron for winding NJP–Pelling hill roads)', qty: 2, packed: false },
+            { id: 'h2', name: 'Paracetamol, Antacids, Cold Tablets, ORS Packets & Band-Aids', qty: 1, packed: false },
+            { id: 'h3', name: 'Personal Regular Medications (if any)', qty: 1, packed: false },
+            { id: 'h4', name: 'Reusable Water Bottle / Hot Water Flask', qty: 1, packed: false },
+            { id: 'h5', name: 'Small Padlock & Chain for Luggage (Return Sleeper Coach S2)', qty: 1, packed: false },
+            { id: 'h6', name: 'Dry Snacks / Biscuits / Cakes for Evening Train Boarding at Bandel Jn', qty: 2, packed: false }
+          ]
+        }
+      ];
+    }
+
+    let state = {
+      selectedMemberSl: 2, // Defaults to Barun Kumar Paul, changeable by anyone
+      categories: getDefaultCategories(),
+      filter: 'all'
+    };
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          state.selectedMemberSl = parsed.selectedMemberSl || 2;
+          state.categories = parsed.categories || getDefaultCategories();
+        } catch (e) {
+          state.categories = getDefaultCategories();
+        }
+      }
+      populateMemberDropdown();
+      populateCategoryDropdown();
+      populateRosterModal();
+      renderMemberCard();
+      renderChecklist();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        selectedMemberSl: state.selectedMemberSl,
+        categories: state.categories
+      }));
+    }
+
+    function populateMemberDropdown() {
+      const select = document.getElementById('memberSelect');
+      select.innerHTML = tourMembers.map(m =>
+        `<option value="${m.sl}" ${m.sl === Number(state.selectedMemberSl) ? 'selected' : ''}>
+          #${m.sl} - ${m.name} (${m.sem})
+        </option>`
+      ).join('');
+    }
+
+    function selectMember(sl) {
+      state.selectedMemberSl = Number(sl);
+      saveState();
+      renderMemberCard();
+    }
+
+    function renderMemberCard() {
+      const member = tourMembers.find(m => m.sl === Number(state.selectedMemberSl)) || tourMembers[0];
+      document.getElementById('progressLabel').textContent = `${member.name}'s Packing Progress`;
+
+      const container = document.getElementById('memberTicketCard');
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-3.5 rounded-lg bg-sky-50/70 border border-sky-200">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sky-900 uppercase">Onward • 17 Nov 2026</span>
+              <span class="font-mono bg-white px-2 py-0.5 rounded border border-sky-200 text-sky-800 font-bold">PNR: ${member.onPnr}</span>
+            </div>
+            <p class="font-semibold text-slate-800 mt-1">27575 / Vande Bharat SL • Third AC (3A)</p>
+            <p class="text-slate-600 mt-0.5">Bandel Jn (18:58) → New Jalpaiguri Jn (01:40, 18 Nov)</p>
+            <div class="mt-2.5 pt-2 border-t border-sky-200/70 flex justify-between items-center">
+              <span>Assigned Berth: <strong class="text-sky-950 text-sm">${member.onSeat}</strong></span>
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-semibold rounded">CNF</span>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-amber-900 uppercase">Return • 21 Nov 2026</span>
+              <span class="font-mono bg-white px-2 py-0.5 rounded border border-amber-200 text-amber-800 font-bold">PNR: ${member.retPnr}</span>
+            </div>
+            <p class="font-semibold text-slate-800 mt-1">13142 / Teesta Torsha Express • Sleeper (SL)</p>
+            <p class="text-slate-600 mt-0.5">Falakata (12:55) → Sealdah (03:35, 22 Nov)</p>
+            <div class="mt-2.5 pt-2 border-t border-amber-200/70 flex justify-between items-center">
+              <span>Assigned Berth: <strong class="text-amber-950 text-sm">${member.retSeat}</strong></span>
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-semibold rounded">CNF</span>
+            </div>
+          </div>
+        </div>
+        ${member.note ? `
+          <div class="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs font-medium">
+            ⚠️ <strong>Personal Alert for ${member.name}:</strong>${member.note}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function populateRosterModal() {
+      const tbody = document.getElementById('rosterTableBody');
+      tbody.innerHTML = tourMembers.map(m => `
+        <tr class="${m.sem === 'Faculty' ? 'bg-sky-50/60 font-medium' : 'hover:bg-slate-50'}">
+          <td class="py-2 px-2">${m.sl}</td>
+          <td class="py-2 px-2 font-semibold text-slate-800">${m.name}</td>
+          <td class="py-2 px-2">${m.sem} (${m.ageSex})</td>
+          <td class="py-2 px-2">${m.mobile}</td>
+          <td class="py-2 px-2"><span class="font-semibold">${m.onSeat}</span> <span class="text-slate-400">(${m.onPnr})</span></td>
+          <td class="py-2 px-2"><span class="font-semibold">${m.retSeat}</span> <span class="text-slate-400">(${m.retPnr})</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function populateCategoryDropdown() {
+      const select = document.getElementById('newCategorySelect');
+      select.innerHTML = state.categories
+        .map(cat => `<option value="${cat.id}">${cat.name}</option>`)
+        .join('');
+    }
+
+    function setFilter(filterType) {
+      state.filter = filterType;
+      ['all', 'remaining', 'packed'].forEach(type => {
+        const btn = document.getElementById(`filter-${type}`);
+        btn.className = type === filterType
+          ? 'px-3 py-2 text-xs font-medium bg-sky-600 text-white'
+          : 'px-3 py-2 text-xs font-medium bg-white text-slate-600 hover:bg-slate-50';
+      });
+      renderChecklist();
+    }
+
+    function toggleItem(catId, itemId) {
+      const cat = state.categories.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (!item) return;
+      item.packed = !item.packed;
+      saveState();
+      renderChecklist(true);
+    }
+
+    function changeQty(catId, itemId, delta) {
+      const cat = state.categories.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (!item) return;
+      item.qty = Math.max(1, item.qty + delta);
+      saveState();
+      renderChecklist();
+    }
+
+    function deleteItem(catId, itemId) {
+      const cat = state.categories.find(c => c.id === catId);
+      if (!cat) return;
+      cat.items = cat.items.filter(i => i.id !== itemId);
+      saveState();
+      renderChecklist();
+    }
+
+    function addItem(e) {
+      e.preventDefault();
+      const catId = document.getElementById('newCategorySelect').value;
+      const input = document.getElementById('newItemInput');
+      const name = input.value.trim();
+      if (!name) return;
+
+      const cat = state.categories.find(c => c.id === catId);
+      if (cat) {
+        cat.items.push({
+          id: 'custom-' + Date.now(),
+          name,
+          qty: 1,
+          packed: false
+        });
+        input.value = '';
+        saveState();
+        renderChecklist();
+      }
+    }
+
+    function resetChecklist() {
+      if (confirm('Reset all packing items back to default and clear checkmarks?')) {
+        state.categories = getDefaultCategories();
+        saveState();
+        renderChecklist();
+      }
+    }
+
+    function toggleModal(id) {
+      document.getElementById(id).classList.toggle('hidden');
+    }
+
+    function renderChecklist(triggerConfettiIfDone = false) {
+      const container = document.getElementById('categoriesContainer');
+      const query = document.getElementById('searchInput').value.toLowerCase();
+
+      let totalItems = 0;
+      let packedItems = 0;
+
+      state.categories.forEach(cat => {
+        cat.items.forEach(item => {
+          totalItems++;
+          if (item.packed) packedItems++;
+        });
+      });
+
+      const pct = totalItems === 0 ? 0 : Math.round((packedItems / totalItems) * 100);
+      document.getElementById('overallBar').style.width = `${pct}%`;
+      document.getElementById('progressStats').textContent = `${packedItems} / ${totalItems} Packed (${pct}%)`;
+
+      if (triggerConfettiIfDone && totalItems > 0 && packedItems === totalItems && typeof confetti === 'function') {
+        confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+      }
+
+      container.innerHTML = state.categories.map(cat => {
+        const catTotal = cat.items.length;
+        const catPacked = cat.items.filter(i => i.packed).length;
+        const catPct = catTotal === 0 ? 0 : Math.round((catPacked / catTotal) * 100);
+
+        const filteredItems = cat.items.filter(item => {
+          const matchesSearch = item.name.toLowerCase().includes(query);
+          const matchesFilter =
+            state.filter === 'all' ||
+            (state.filter === 'packed' && item.packed) ||
+            (state.filter === 'remaining' && !item.packed);
+          return matchesSearch && matchesFilter;
+        });
+
+        return `
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-slate-100 bg-slate-50/70">
+              <div class="flex justify-between items-center mb-1.5">
+                <h3 class="font-bold text-sm text-slate-800">${cat.name}</h3>
+                <span class="text-xs font-semibold text-slate-600">${catPacked}/${catTotal} (${catPct}%)</span>
+              </div>
+              <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <div class="h-full bg-sky-600 transition-all duration-300" style="width: ${catPct}%"></div>
+              </div>
+            </div>
+
+            <ul class="divide-y divide-slate-100 p-2 flex-1">
+              ${
+                filteredItems.length === 0
+                  ? `<li class="py-6 text-center text-xs text-slate-400">No matching items in this section.</li>`
+                  : filteredItems.map(item => `
+                    <li class="flex items-center justify-between gap-2 p-2 rounded-lg hover:bg-slate-50 transition">
+                      <label class="flex items-start gap-3 cursor-pointer flex-1 select-none">
+                        <input type="checkbox" class="custom-checkbox hidden" ${item.packed ? 'checked' : ''} onchange="toggleItem('${cat.id}', '${item.id}')" />
+                        <div class="w-5 h-5 mt-0.5 rounded border border-slate-300 flex items-center justify-center shrink-0 transition">
+                          <svg class="w-3.5 h-3.5 text-white hidden pointer-events-none" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        </div>
+                        <span class="text-xs md:text-sm ${item.packed ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">
+                          ${item.name}
+                        </span>
+                      </label>
+
+                      <div class="flex items-center gap-1 shrink-0 no-print">
+                        <button onclick="changeQty('${cat.id}', '${item.id}', -1)" class="w-6 h-6 text-xs bg-slate-100 hover:bg-slate-200 rounded text-slate-600 font-bold">-</button>
+                        <span class="text-xs font-semibold text-slate-600 px-1.5">x${item.qty}</span>
+                        <button onclick="changeQty('${cat.id}', '${item.id}', 1)" class="w-6 h-6 text-xs bg-slate-100 hover:bg-slate-200 rounded text-slate-600 font-bold">+</button>
+                        <button onclick="deleteItem('${cat.id}', '${item.id}')" title="Remove item" class="ml-1 text-slate-300 hover:text-rose-600 text-xs px-1">✕</button>
+                      </div>
+                    </li>
+                  `).join('')
+              }
+            </ul>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.addEventListener('DOMContentLoaded', loadState);
+  </script>
+</body>
+</html>
