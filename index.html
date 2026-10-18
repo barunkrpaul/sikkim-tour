@@ -1,1063 +1,582 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en-IN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>PackMate • Srikrishna College Sikkim Tour 2026</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            forest: '#173F35',
-            himalaya: '#547C91',
-            ivory: '#FAF8F2',
-            amber: '#D8A84E',
-            charcoal: '#252B2A',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            serif: ['Playfair Display', 'serif'],
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { background-color: #FAF8F2; color: #252B2A; font-family: 'Inter', sans-serif; }
-    h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
-    .custom-checkbox:checked + div { background-color: #173F35; border-color: #173F35; }
-    .custom-checkbox:checked + div svg { display: block; }
-    @media print { .no-print { display: none !important; } body { background-color: white; } }
-  </style>
+  <meta name="description" content="PackMate — tour companion for the Srikrishna College Computer Science Department educational tour to Ravangla, Namchi and Pelling, Sikkim, 18–21 November 2026." />
+  <meta name="theme-color" content="#173F35" />
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="https://barunkrpaul.github.io/sikkim-tour/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PackMate • Our Himalayan Journey" />
+  <meta property="og:description" content="Srikrishna College CS Department educational tour to Sikkim, 18–21 November 2026 — itinerary, checklist, announcements and emergency contacts." />
+  <meta property="og:url" content="https://barunkrpaul.github.io/sikkim-tour/" />
+  <meta property="og:image" content="https://barunkrpaul.github.io/sikkim-tour/icons/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/app.css" />
+  <script src="assets/app.js" defer></script>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-amber/30">
+<body class="min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] btn-amber">Skip to content</a>
 
-  <!-- Header Navigation -->
-  <header class="sticky top-0 z-40 bg-ivory/90 backdrop-blur-md border-b border-forest/10 shadow-xs">
-    <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-forest text-ivory flex items-center justify-center font-serif font-bold text-lg shadow-sm">
-          PM
-        </div>
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-himalaya">Srikrishna College • Dept of CS</span>
-          <h1 class="text-base sm:text-lg font-serif font-bold text-forest leading-tight">PackMate Sikkim 2026</h1>
-        </div>
-      </div>
+  <div id="offlineBanner" hidden role="status" class="bg-charcoal text-ivory text-sm text-center px-4 py-2">
+    You are offline. Showing the copy saved on this device — announcements, weather and photos may be out of date.
+  </div>
+  <div id="urgentBanner" hidden role="alert" class="bg-rose-700 text-white px-4 py-3"></div>
 
-      <div class="flex items-center gap-2 no-print">
-        <button onclick="toggleModal('emergencyModal')" class="px-3 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-xs transition flex items-center gap-1">
-          <span>🚨</span> SOS / Dial
-        </button>
-        <button onclick="toggleModal('rosterModal')" class="hidden sm:flex px-3 py-1.5 text-xs font-semibold bg-forest/10 hover:bg-forest/20 text-forest rounded-lg transition">
-          Roster (22)
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-ivory/95 backdrop-blur border-b border-forest/10">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+      <a href="#hero" class="flex items-center gap-2.5 min-w-0" aria-label="PackMate home">
+        <img src="icons/favicon.svg" alt="" width="36" height="36" class="w-9 h-9 rounded-xl" />
+        <span class="min-w-0">
+          <span class="block text-[11px] font-bold uppercase tracking-wider text-himalaya-dark truncate">Srikrishna College • CS</span>
+          <span class="block font-serif font-bold text-forest leading-tight">PackMate</span>
+        </span>
+      </a>
+      <nav aria-label="Main" class="hidden lg:flex items-center gap-1">
+        <a class="navlink" href="#itinerary">Itinerary</a>
+        <a class="navlink" href="#dashboard">My Dashboard</a>
+        <a class="navlink" href="#checklist">Checklist</a>
+        <a class="navlink" href="#gallery">Gallery</a>
+        <a class="navlink" href="#map">Map</a>
+        <a class="navlink" href="#expenses">Expenses</a>
+        <a class="navlink" href="#memory">Memory Book</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <a href="#emergency" class="btn btn-sm bg-rose-700 text-white hover:bg-rose-800">SOS</a>
+        <button id="menuBtn" type="button" class="lg:hidden btn-ghost btn-sm" aria-expanded="false" aria-controls="mobileNav">
+          <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <span>Menu</span>
         </button>
       </div>
     </div>
+    <nav id="mobileNav" aria-label="Main" hidden class="lg:hidden border-t border-forest/10 bg-ivory">
+      <div class="max-w-6xl mx-auto px-4 py-3 grid grid-cols-2 gap-1">
+        <a class="navlink" href="#announcements">Announcements</a>
+        <a class="navlink" href="#dashboard">My Dashboard</a>
+        <a class="navlink" href="#itinerary">Itinerary</a>
+        <a class="navlink" href="#map">Map</a>
+        <a class="navlink" href="#weather">Weather</a>
+        <a class="navlink" href="#checklist">Checklist</a>
+        <a class="navlink" href="#gallery">Photo Gallery</a>
+        <a class="navlink" href="#expenses">Expenses</a>
+        <a class="navlink" href="#memory">Memory Book</a>
+        <a class="navlink text-rose-800" href="#emergency">Emergency</a>
+      </div>
+    </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="relative bg-forest text-ivory py-16 sm:py-24 px-4 overflow-hidden border-b-4 border-amber">
-    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#FAF8F2_1px,transparent_1px)] [background-size:16px_16px]"></div>
-    <div class="max-w-4xl mx-auto relative z-10 text-center space-y-6">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ivory/10 text-amber text-xs font-semibold tracking-wide uppercase border border-amber/30">
-        Departmental Educational Excursion • November 2026
-      </div>
-      <h2 class="text-3xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight text-ivory">
-        Our Himalayan Journey to Sikkim
-      </h2>
-      <p class="text-sm sm:text-base text-ivory/80 max-w-2xl mx-auto font-light leading-relaxed">
-        Ravangla, Pelling & Namchi. Designed specifically for faculty members and computer science students of Srikrishna College, Bagula, Nadia.
-      </p>
+  <!-- Hero -->
+  <section id="hero" class="relative overflow-hidden bg-forest text-ivory" aria-labelledby="heroTitle">
+    <svg class="absolute inset-x-0 bottom-0 w-full h-48 sm:h-64" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#24584B" d="M0 230 L120 170 L210 205 L330 120 L430 185 L560 90 L690 175 L800 110 L930 190 L1050 100 L1180 170 L1300 125 L1440 180 V320 H0Z"/>
+      <path fill="#FAF8F2" opacity=".9" d="M560 90 L606 120 L590 114 L575 124 L560 114 L545 124 L519 120 Z M1050 100 L1106 130 L1088 124 L1072 134 L1056 124 L1040 134 L1010 130 Z M330 120 L368 145 L352 140 L340 150 L328 140 L316 149 L295 145 Z"/>
+      <path fill="#0F2B24" d="M0 270 L160 225 L300 260 L470 205 L620 255 L780 215 L950 262 L1110 220 L1280 258 L1440 230 V320 H0Z"/>
+    </svg>
+    <div class="relative max-w-5xl mx-auto px-4 pt-14 pb-40 sm:pt-20 sm:pb-56 text-center">
+      <p class="text-xs sm:text-sm font-bold tracking-[0.25em] text-amber">PACKMATE &nbsp;•&nbsp; SRIKRISHNA COLLEGE</p>
+      <h1 id="heroTitle" class="mt-4 font-serif font-bold text-4xl sm:text-6xl tracking-tight">Our Himalayan Journey</h1>
+      <p class="mt-4 text-base sm:text-lg text-ivory/90">Computer Science Department<br />Sikkim Educational Tour 2026</p>
+      <p class="mt-3 font-semibold text-lg sm:text-xl">18–21 November 2026</p>
+      <p class="mt-1 text-ivory/85">Ravangla &nbsp;|&nbsp; Pelling &nbsp;|&nbsp; Namchi</p>
 
-      <div class="grid grid-cols-3 gap-3 max-w-lg mx-auto pt-4 text-center">
-        <div class="bg-forest-dark/40 backdrop-blur-sm border border-ivory/15 rounded-xl p-3">
-          <div class="text-xl sm:text-2xl font-bold font-serif text-amber">22</div>
-          <div class="text-[11px] text-ivory/70 font-medium uppercase tracking-wider">Travellers</div>
-        </div>
-        <div class="bg-forest-dark/40 backdrop-blur-sm border border-ivory/15 rounded-xl p-3">
-          <div class="text-xl sm:text-2xl font-bold font-serif text-amber">4 Days</div>
-          <div class="text-[11px] text-ivory/70 font-medium uppercase tracking-wider">Exploration</div>
-        </div>
-        <div class="bg-forest-dark/40 backdrop-blur-sm border border-ivory/15 rounded-xl p-3">
-          <div class="text-xl sm:text-2xl font-bold font-serif text-amber">3</div>
-          <div class="text-[11px] text-ivory/70 font-medium uppercase tracking-wider">Destinations</div>
-        </div>
+      <div id="countdown" class="mt-8 inline-block rounded-2xl bg-forest-dark/60 border border-ivory/15 px-5 py-4" aria-live="off">
+        <p id="countdownLabel" class="text-xs font-semibold uppercase tracking-wider text-amber">Countdown to departure</p>
+        <div id="countdownClock" class="mt-2 flex justify-center gap-3 sm:gap-5 font-serif" aria-hidden="true"></div>
+        <p id="countdownText" class="sr-only"></p>
+        <p id="countdownSub" class="mt-2 text-xs text-ivory/75">Bandel Jn, 17 Nov 2026, 6:58 pm IST</p>
       </div>
 
-      <div class="pt-6 flex flex-wrap justify-center gap-2.5 no-print">
-        <a href="#itinerary" class="px-4 py-2 text-xs font-bold bg-amber text-forest hover:bg-amber/90 rounded-lg shadow-sm transition">Explore Itinerary</a>
-        <a href="#checklistSection" class="px-4 py-2 text-xs font-semibold bg-ivory/15 hover:bg-ivory/25 text-ivory rounded-lg transition">Packing Checklist</a>
-        <a href="#gallerySection" class="px-4 py-2 text-xs font-semibold bg-ivory/15 hover:bg-ivory/25 text-ivory rounded-lg transition">Photo Gallery</a>
+      <nav aria-label="Quick actions" class="mt-8 flex flex-wrap justify-center gap-2.5">
+        <a href="#itinerary" class="btn-amber">Explore Itinerary</a>
+        <a href="#dashboard" class="btn bg-ivory/15 hover:bg-ivory/25 text-ivory">My Tour Dashboard</a>
+        <a href="#emergency" class="btn bg-ivory/15 hover:bg-ivory/25 text-ivory">Emergency Contacts</a>
+        <a href="#checklist" class="btn bg-ivory/15 hover:bg-ivory/25 text-ivory">Packing Checklist</a>
+        <a href="#gallery" class="btn bg-ivory/15 hover:bg-ivory/25 text-ivory">Photo Gallery</a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Summary cards -->
+  <section id="summary" aria-label="Tour summary" class="relative z-10 -mt-24 sm:-mt-32 px-4">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div class="card p-4">
+        <p class="eyebrow">Travellers</p>
+        <p class="mt-1 font-serif font-bold text-3xl text-forest">22</p>
+        <p class="text-xs text-gray-600">5 faculty • 17 students</p>
+      </div>
+      <div class="card p-4">
+        <p class="eyebrow">Duration</p>
+        <p class="mt-1 font-serif font-bold text-3xl text-forest">4 days</p>
+        <p class="text-xs text-gray-600">in Sikkim • 17–22 Nov with train travel</p>
+      </div>
+      <div class="card p-4">
+        <p class="eyebrow">Destinations</p>
+        <p class="mt-1 font-serif font-bold text-lg text-forest leading-snug">Ravangla • Namchi • Pelling</p>
+        <p class="text-xs text-gray-600">South &amp; West Sikkim</p>
+      </div>
+      <div class="card p-4">
+        <p class="eyebrow">Next event</p>
+        <p id="nextEventTitle" class="mt-1 font-semibold text-forest leading-snug">—</p>
+        <p id="nextEventTime" class="text-xs text-gray-600"></p>
       </div>
     </div>
   </section>
 
-  <!-- Main Content Dashboard -->
-  <main class="max-w-5xl mx-auto px-4 py-8 space-y-12">
+  <main id="main" class="flex-1 max-w-5xl w-full mx-auto px-4 py-10 space-y-10">
 
-    <!-- Emergency Banner -->
-    <section class="bg-rose-50 border border-rose-200 rounded-2xl p-5 shadow-xs">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-rose-200">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">📞</span>
-          <h3 class="text-xs sm:text-sm font-bold text-rose-950 uppercase tracking-wide">
-            24x7 Emergency & Faculty Quick-Dial
-          </h3>
-        </div>
-        <button onclick="toggleModal('emergencyModal')" class="text-xs font-semibold text-rose-700 hover:text-rose-900 underline text-left sm:text-right no-print">
-          View All Helplines & District Hospitals →
-        </button>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
-        <a href="tel:8250341647" class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-rose-200 hover:border-rose-400 transition shadow-2xs">
-          <div><div class="font-bold text-charcoal">Prof. Ujjal Kr. Das</div><div class="text-[10px] text-gray-500">HOD • B2-8 / S2-17</div></div>
-          <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">8250341647</span>
-        </a>
-        <a href="tel:7501106583" class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-rose-200 hover:border-rose-400 transition shadow-2xs">
-          <div><div class="font-bold text-charcoal">Prof. Barun Kr. Paul</div><div class="text-[10px] text-gray-500">Faculty • B2-2 / S2-18</div></div>
-          <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">7501106583</span>
-        </a>
-        <a href="tel:8926612351" class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-rose-200 hover:border-rose-400 transition shadow-2xs">
-          <div><div class="font-bold text-charcoal">Prof. Ashraful Islam</div><div class="text-[10px] text-gray-500">Faculty • B2-67 / S2-19</div></div>
-          <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">8926612351</span>
-        </a>
-        <a href="tel:9830607334" class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-rose-200 hover:border-rose-400 transition shadow-2xs">
-          <div><div class="font-bold text-charcoal">Prof. Rupa D Banerjee</div><div class="text-[10px] text-gray-500">Faculty • B2-3 / S2-20</div></div>
-          <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">9830607334</span>
-        </a>
-        <a href="tel:8768434156" class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-rose-200 hover:border-rose-400 transition shadow-2xs">
-          <div><div class="font-bold text-charcoal">Prof. S Dutta</div><div class="text-[10px] text-gray-500">Faculty • B2-5 / S2-21</div></div>
-          <span class="font-mono font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">8768434156</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- Ticket Card -->
-    <section class="bg-white rounded-2xl border border-forest/15 shadow-sm p-5 space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-forest/10">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
-          <label for="memberSelect" class="text-xs font-bold uppercase tracking-wider text-forest shrink-0">
-            Select Your Name:
-          </label>
-          <select id="memberSelect" onchange="selectMember(this.value)" class="w-full sm:w-80 px-3.5 py-2 text-sm font-semibold bg-ivory border border-forest/30 text-charcoal rounded-xl focus:outline-none focus:ring-2 focus:ring-forest"></select>
-        </div>
-        <button onclick="toggleModal('rosterModal')" class="text-xs font-semibold text-himalaya hover:underline">
-          View All 22 Roster & PNR List →
-        </button>
-      </div>
-      <div id="memberTicketCard"></div>
-    </section>
-
-    <!-- Itinerary Section -->
-    <section id="itinerary" class="bg-white rounded-2xl border border-forest/15 shadow-sm p-6 space-y-6">
-      <div class="border-b border-forest/10 pb-4 flex justify-between items-center">
+    <!-- Announcements -->
+    <section id="announcements" class="section" aria-labelledby="annTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-himalaya">Schedule & Sightseeing</span>
-          <h3 class="font-serif font-bold text-2xl text-forest mt-0.5">Day-Wise Tour Itinerary</h3>
+          <p class="eyebrow">From the faculty</p>
+          <h2 id="annTitle" class="section-title">Announcements</h2>
         </div>
-        <span class="text-xs bg-forest/10 text-forest font-semibold px-3 py-1 rounded-full">18–21 Nov 2026</span>
+        <button id="annNewBtn" type="button" class="btn-primary btn-sm" hidden>+ New announcement</button>
       </div>
-
-      <div class="space-y-4">
-        <div class="border border-forest/20 rounded-xl overflow-hidden transition">
-          <button onclick="toggleAccordion('day0')" class="w-full p-4 bg-ivory hover:bg-forest/5 flex justify-between items-center text-left transition">
-            <div>
-              <span class="text-xs font-bold text-himalaya uppercase">Day 0 • 17 November 2026</span>
-              <h4 class="font-serif font-bold text-base text-forest">Departure from Bandel Jn to New Jalpaiguri</h4>
-            </div>
-            <span id="icon-day0" class="text-forest font-bold text-lg">▼</span>
-          </button>
-          <div id="content-day0" class="p-4 bg-white border-t border-forest/10 text-xs sm:text-sm space-y-2 text-charcoal">
-            <p><strong>Departure:</strong> Bandel Jn (BDC) at 18:58 hrs via 27575 Vande Bharat SL (Third AC / Coach B2)[cite: 2, 4].</p>
-            <p><strong>Arrival:</strong> New Jalpaiguri Jn (NJP) at 01:40 hrs on 18 November 2026[cite: 2, 4].</p>
-          </div>
-        </div>
-
-        <div class="border border-forest/20 rounded-xl overflow-hidden transition">
-          <button onclick="toggleAccordion('day1')" class="w-full p-4 bg-ivory hover:bg-forest/5 flex justify-between items-center text-left transition">
-            <div>
-              <span class="text-xs font-bold text-himalaya uppercase">Day 1 • 18 November 2026</span>
-              <h4 class="font-serif font-bold text-base text-forest">Arrival in NJP & Transfer to Ravangla (South Sikkim)</h4>
-            </div>
-            <span id="icon-day1" class="text-forest font-bold text-lg">▼</span>
-          </button>
-          <div id="content-day1" class="p-4 bg-white border-t border-forest/10 text-xs sm:text-sm space-y-2 text-charcoal">
-            <p><strong>Transfer:</strong> Early morning arrival at NJP railway station, followed by private vehicle transfer towards Ravangla via scenic hill routes.</p>
-            <p><strong>Sightseeing:</strong> Visit the magnificent Buddha Park (Tathagata Tsal) featuring the 130-foot statue of Buddha.</p>
-            <p><strong>Overnight Stay:</strong> Ravangla hotel / resort.</p>
-          </div>
-        </div>
-
-        <div class="border border-forest/20 rounded-xl overflow-hidden transition">
-          <button onclick="toggleAccordion('day2')" class="w-full p-4 bg-ivory hover:bg-forest/5 flex justify-between items-center text-left transition">
-            <div>
-              <span class="text-xs font-bold text-himalaya uppercase">Day 2 • 19 November 2026</span>
-              <h4 class="font-serif font-bold text-base text-forest">Ravangla to Pelling (West Sikkim) via Namchi</h4>
-            </div>
-            <span id="icon-day2" class="text-forest font-bold text-lg">▼</span>
-          </button>
-          <div id="content-day2" class="p-4 bg-white border-t border-forest/10 text-xs sm:text-sm space-y-2 text-charcoal">
-            <p><strong>Morning:</strong> Proceed from Ravangla to Namchi. Visit Char Dham and Samdruptse Hill.</p>
-            <p><strong>Afternoon:</strong> Drive further into West Sikkim towards Pelling. Visit Pelling Skywalk and Rabdentse Ruins.</p>
-          </div>
-        </div>
-
-        <div class="border border-forest/20 rounded-xl overflow-hidden transition">
-          <button onclick="toggleAccordion('day3')" class="w-full p-4 bg-ivory hover:bg-forest/5 flex justify-between items-center text-left transition">
-            <div>
-              <span class="text-xs font-bold text-himalaya uppercase">Day 3 & 4 • 20–21 November 2026</span>
-              <h4 class="font-serif font-bold text-base text-forest">Pelling Exploration, Falakata Transfer & Return to Sealdah</h4>
-            </div>
-            <span id="icon-day3" class="text-forest font-bold text-lg">▼</span>
-          </button>
-          <div id="content-day3" class="p-4 bg-white border-t border-forest/10 text-xs sm:text-sm space-y-2 text-charcoal">
-            <p><strong>20 Nov:</strong> Kanchenjunga waterfall sightseeing around Pelling.</p>
-            <p><strong>21 Nov Departure:</strong> Transfer to Falakata for return journey on 13142 Teesta Torsha Express departing at 12:55 hrs (Coach S2)[cite: 2]. Arrival in Sealdah at 03:35 hrs on 22 Nov[cite: 2].</p>
-          </div>
-        </div>
-      </div>
+      <div id="annList" class="mt-4 space-y-3" aria-live="polite"></div>
+      <p id="annStatus" class="mt-3 text-xs text-gray-600"></p>
     </section>
 
-    <!-- Checklist Section -->
-    <section id="checklistSection" class="bg-white rounded-2xl border border-forest/15 shadow-sm p-6 space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-forest/10 pb-4">
+    <!-- Dashboard -->
+    <section id="dashboard" class="section" aria-labelledby="dashTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-himalaya">Preparation Dashboard</span>
-          <h3 class="font-serif font-bold text-2xl text-forest mt-0.5">Vacation Packing Checklist</h3>
+          <p class="eyebrow">Personal</p>
+          <h2 id="dashTitle" class="section-title">My Tour Dashboard</h2>
         </div>
-        <div class="flex items-center gap-2 no-print">
-          <button onclick="resetChecklist()" class="px-3 py-1.5 text-xs font-medium bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg transition">
-            Reset Checklist
-          </button>
-          <button onclick="window.print()" class="px-3 py-1.5 text-xs font-medium bg-forest/10 hover:bg-forest/20 text-forest rounded-lg transition">
-            Print List
-          </button>
-        </div>
+        <button id="logoutBtn" type="button" class="btn-ghost btn-sm" hidden>Log out on this device</button>
       </div>
 
-      <div class="bg-ivory rounded-xl p-4 border border-forest/10">
-        <div class="flex justify-between items-center text-xs font-semibold mb-2">
-          <span id="progressLabel" class="text-forest uppercase tracking-wider">Overall Packing Progress</span>
-          <span id="progressStats" class="text-himalaya font-bold text-sm">0 / 0 Packed (0%)</span>
-        </div>
-        <div class="w-full h-3.5 bg-forest/10 rounded-full overflow-hidden p-0.5">
-          <div id="overallBar" class="h-full bg-forest rounded-full transition-all duration-500" style="width: 0%"></div>
-        </div>
-      </div>
-
-      <div class="flex flex-col md:flex-row gap-3 items-center justify-between no-print">
-        <div class="flex flex-1 w-full gap-2">
-          <input id="searchInput" type="text" placeholder="Search items..." oninput="renderChecklist()" class="w-full px-3.5 py-2 text-sm bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest" />
-          <div class="flex rounded-xl border border-forest/30 overflow-hidden shrink-0 bg-ivory">
-            <button onclick="setFilter('all')" id="filter-all" class="px-3 py-2 text-xs font-medium bg-forest text-ivory">All</button>
-            <button onclick="setFilter('remaining')" id="filter-remaining" class="px-3 py-2 text-xs font-medium bg-transparent text-charcoal hover:bg-forest/10">Remaining</button>
-            <button onclick="setFilter('packed')" id="filter-packed" class="px-3 py-2 text-xs font-medium bg-transparent text-charcoal hover:bg-forest/10">Packed</button>
-          </div>
-        </div>
-
-        <form onsubmit="addItem(event)" class="flex w-full md:w-auto gap-2">
-          <select id="newCategorySelect" class="px-3 py-2 text-xs bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest"></select>
-          <input id="newItemInput" type="text" placeholder="Add custom item..." required class="px-3 py-2 text-sm bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest" />
-          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-forest hover:bg-forest/90 text-ivory rounded-xl shrink-0 transition">
-            + Add
-          </button>
-        </form>
-      </div>
-
-      <div id="categoriesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-    </section>
-
-    <!-- Photo Gallery Section -->
-    <section id="gallerySection" class="bg-white rounded-2xl border border-forest/15 shadow-sm p-6 space-y-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-forest/10 pb-4">
+      <form id="loginForm" class="mt-5 max-w-md space-y-3" novalidate>
+        <p class="text-sm text-gray-700">Enter the personal access code your faculty coordinator gave you to see your train tickets, berths, synced checklist, photos and expenses. Your details are only shown to you and the faculty.</p>
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-himalaya">Shared Memories</span>
-          <h3 class="font-serif font-bold text-2xl text-forest mt-0.5">Sikkim Tour Photo Gallery</h3>
+          <label for="accessCode" class="label">Access code</label>
+          <input id="accessCode" class="field font-mono tracking-widest uppercase" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. ABCD-2345" required />
         </div>
-        <button onclick="toggleModal('uploadPhotoModal')" class="px-4 py-2 text-xs font-bold bg-forest hover:bg-forest/90 text-ivory rounded-xl shadow-xs transition flex items-center gap-1.5">
-          <span>➕</span> Upload Tour Photo
-        </button>
-      </div>
+        <label class="flex items-center gap-2 text-sm"><input id="rememberMe" type="checkbox" class="w-4 h-4 accent-forest" checked /> Keep me logged in on this device</label>
+        <button id="loginBtn" type="submit" class="btn-primary w-full sm:w-auto">Open my dashboard</button>
+        <p id="loginError" role="alert" class="text-sm text-rose-800"></p>
+        <p class="text-xs text-gray-600">Lost your code? Ask Prof. Barun Kumar Paul or any faculty coordinator. Don't share it — it opens your personal ticket details.</p>
+      </form>
 
-      <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <div id="dashContent" hidden class="mt-5 space-y-5"></div>
     </section>
 
+    <!-- Itinerary -->
+    <section id="itinerary" class="section" aria-labelledby="itinTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">Schedule &amp; sightseeing</p>
+          <h2 id="itinTitle" class="section-title">Day-wise Itinerary</h2>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button type="button" class="btn-ghost btn-sm" data-expand="itinerary">Expand all</button>
+          <button type="button" class="btn-ghost btn-sm" data-print-section="itinerary">Print</button>
+          <a href="itinerary.pdf" download class="btn-ghost btn-sm">Download PDF</a>
+        </div>
+      </div>
+
+      <p class="mt-4 text-xs text-gray-600 flex flex-wrap gap-x-4 gap-y-1">
+        <span><span class="chip bg-emerald-100 text-emerald-900">Booked</span> train tickets confirmed (CNF)</span>
+        <span><span class="chip bg-amber/20 text-amber-dark">Planned</span> road transfer &amp; sightseeing plan — timings to be announced by faculty</span>
+      </p>
+
+      <ol class="mt-5 relative border-l-2 border-forest/15 ml-2 space-y-5">
+        <li class="pl-5 relative print-break">
+          <span class="absolute -left-[9px] top-5 w-4 h-4 rounded-full bg-forest ring-4 ring-white" aria-hidden="true"></span>
+          <details class="card overflow-hidden group" open>
+            <summary class="cursor-pointer list-none p-4 flex justify-between items-start gap-3 hover:bg-forest/5">
+              <span>
+                <span class="eyebrow">Day 0 • Tue 17 November 2026</span>
+                <span class="block font-serif font-bold text-lg text-forest">Departure from Bandel Jn to New Jalpaiguri</span>
+              </span>
+              <span class="no-print text-forest group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+            </summary>
+            <div class="px-4 pb-4 text-sm space-y-2 border-t border-forest/10 pt-3">
+              <p><span class="chip bg-emerald-100 text-emerald-900">Booked</span></p>
+              <p><strong>Train:</strong> 27575 Vande Bharat SL • Third AC (3A) • Coach B2</p>
+              <p><strong>Departs:</strong> Bandel Jn (BDC) at 18:58</p>
+              <p><strong>Arrives:</strong> New Jalpaiguri Jn (NJP) at 01:40 on 18 November</p>
+              <p class="text-gray-700"><strong>Instructions:</strong> Carry original photo ID and college ID card. Check your berth in My Dashboard.</p>
+            </div>
+          </details>
+        </li>
+
+        <li class="pl-5 relative print-break">
+          <span class="absolute -left-[9px] top-5 w-4 h-4 rounded-full bg-forest ring-4 ring-white" aria-hidden="true"></span>
+          <details class="card overflow-hidden group">
+            <summary class="cursor-pointer list-none p-4 flex justify-between items-start gap-3 hover:bg-forest/5">
+              <span>
+                <span class="eyebrow">Day 1 • Wed 18 November 2026</span>
+                <span class="block font-serif font-bold text-lg text-forest">Arrival at NJP &amp; transfer to Ravangla (South Sikkim)</span>
+              </span>
+              <span class="no-print text-forest group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+            </summary>
+            <div class="px-4 pb-4 text-sm space-y-2 border-t border-forest/10 pt-3">
+              <p><span class="chip bg-amber/20 text-amber-dark">Planned</span></p>
+              <p><strong>Transport:</strong> Early-morning arrival at NJP railway station, followed by private vehicle transfer towards Ravangla via scenic hill routes.</p>
+              <p><strong>Sightseeing:</strong> Buddha Park (Tathagata Tsal), featuring the 130-foot statue of Buddha.</p>
+              <p><strong>Overnight stay:</strong> Ravangla hotel / resort (name and contact to be announced).</p>
+            </div>
+          </details>
+        </li>
+
+        <li class="pl-5 relative print-break">
+          <span class="absolute -left-[9px] top-5 w-4 h-4 rounded-full bg-forest ring-4 ring-white" aria-hidden="true"></span>
+          <details class="card overflow-hidden group">
+            <summary class="cursor-pointer list-none p-4 flex justify-between items-start gap-3 hover:bg-forest/5">
+              <span>
+                <span class="eyebrow">Day 2 • Thu 19 November 2026</span>
+                <span class="block font-serif font-bold text-lg text-forest">Ravangla to Pelling (West Sikkim) via Namchi</span>
+              </span>
+              <span class="no-print text-forest group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+            </summary>
+            <div class="px-4 pb-4 text-sm space-y-2 border-t border-forest/10 pt-3">
+              <p><span class="chip bg-amber/20 text-amber-dark">Planned</span></p>
+              <p><strong>Morning:</strong> Proceed from Ravangla to Namchi. Visit Char Dham and Samdruptse Hill.</p>
+              <p><strong>Afternoon:</strong> Drive further into West Sikkim towards Pelling. Visit Pelling Skywalk and Rabdentse Ruins.</p>
+              <p class="text-gray-700"><strong>Accommodation:</strong> not yet specified in the plan — faculty will announce.</p>
+            </div>
+          </details>
+        </li>
+
+        <li class="pl-5 relative print-break">
+          <span class="absolute -left-[9px] top-5 w-4 h-4 rounded-full bg-forest ring-4 ring-white" aria-hidden="true"></span>
+          <details class="card overflow-hidden group">
+            <summary class="cursor-pointer list-none p-4 flex justify-between items-start gap-3 hover:bg-forest/5">
+              <span>
+                <span class="eyebrow">Day 3 • Fri 20 November 2026</span>
+                <span class="block font-serif font-bold text-lg text-forest">Pelling exploration</span>
+              </span>
+              <span class="no-print text-forest group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+            </summary>
+            <div class="px-4 pb-4 text-sm space-y-2 border-t border-forest/10 pt-3">
+              <p><span class="chip bg-amber/20 text-amber-dark">Planned</span></p>
+              <p><strong>Sightseeing:</strong> Kanchenjunga Waterfall and sightseeing around Pelling.</p>
+            </div>
+          </details>
+        </li>
+
+        <li class="pl-5 relative print-break">
+          <span class="absolute -left-[9px] top-5 w-4 h-4 rounded-full bg-forest ring-4 ring-white" aria-hidden="true"></span>
+          <details class="card overflow-hidden group">
+            <summary class="cursor-pointer list-none p-4 flex justify-between items-start gap-3 hover:bg-forest/5">
+              <span>
+                <span class="eyebrow">Day 4 • Sat 21 November 2026</span>
+                <span class="block font-serif font-bold text-lg text-forest">Transfer to Falakata &amp; return journey to Sealdah</span>
+              </span>
+              <span class="no-print text-forest group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+            </summary>
+            <div class="px-4 pb-4 text-sm space-y-2 border-t border-forest/10 pt-3">
+              <p><span class="chip bg-amber/20 text-amber-dark">Planned</span> road transfer &nbsp; <span class="chip bg-emerald-100 text-emerald-900">Booked</span> train</p>
+              <p><strong>Transport:</strong> Transfer to Falakata for the return journey.</p>
+              <p><strong>Train:</strong> 13142 Teesta Torsha Express • Sleeper (SL) • Coach S2</p>
+              <p><strong>Departs:</strong> Falakata at 12:55</p>
+              <p><strong>Arrives:</strong> Sealdah at 03:35 on Sun 22 November</p>
+              <p class="text-gray-700"><strong>Instructions:</strong> Sleeper coach is non-AC — keep a light blanket or shawl and a padlock &amp; chain for luggage.</p>
+            </div>
+          </details>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Map -->
+    <section id="map" class="section" aria-labelledby="mapTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">Where we're going</p>
+          <h2 id="mapTitle" class="section-title">Tour Map</h2>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button type="button" class="btn-ghost btn-sm" data-map-view="sikkim">Sikkim</button>
+          <button type="button" class="btn-ghost btn-sm" data-map-view="route">Full route</button>
+        </div>
+      </div>
+      <div id="mapCanvas" class="mt-4 h-[420px] sm:h-[480px] rounded-xl border border-forest/15 bg-forest/5 flex items-center justify-center text-sm text-gray-600" role="region" aria-label="Interactive map of tour destinations">Map loads when you scroll here…</div>
+      <ul class="mt-3 text-xs text-gray-700 flex flex-wrap gap-x-5 gap-y-1">
+        <li><span class="inline-block w-6 border-t-4 border-forest align-middle"></span> Train — booked</li>
+        <li><span class="inline-block w-6 border-t-4 border-dashed border-amber-dark align-middle"></span> Road — planned (straight line, not the actual road)</li>
+        <li>Marker positions are approximate. Use “Open in Google Maps” for directions.</li>
+      </ul>
+      <ul id="placeList" class="mt-4 grid sm:grid-cols-2 gap-2 text-sm"></ul>
+    </section>
+
+    <!-- Weather -->
+    <section id="weather" class="section" aria-labelledby="weatherTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">Optional • live data</p>
+          <h2 id="weatherTitle" class="section-title">Weather</h2>
+        </div>
+        <button id="weatherRefresh" type="button" class="btn-ghost btn-sm no-print">Refresh</button>
+      </div>
+      <div id="weatherBody" class="mt-4 grid md:grid-cols-3 gap-3" aria-live="polite"></div>
+      <p id="weatherMeta" class="mt-3 text-xs text-gray-600"></p>
+      <p class="mt-2 text-xs text-gray-600">Forecasts from <a class="underline" href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (covers the next 7 days only). Mountain weather changes quickly and roads may close after heavy rain or landslides — always follow faculty instructions.</p>
+    </section>
+
+    <!-- Checklist -->
+    <section id="checklist" class="section" aria-labelledby="checkTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">Preparation</p>
+          <h2 id="checkTitle" class="section-title">Packing &amp; Document Checklist</h2>
+          <p id="checkOwner" class="text-xs text-gray-600 mt-1"></p>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button id="checkReset" type="button" class="btn-danger btn-sm">Reset</button>
+          <button type="button" class="btn-ghost btn-sm" data-print-section="checklist">Print</button>
+        </div>
+      </div>
+
+      <div class="mt-4 rounded-xl bg-ivory border border-forest/10 p-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div><p id="statTotal" class="font-serif font-bold text-2xl text-forest">0</p><p class="text-xs text-gray-600">Total items</p></div>
+          <div><p id="statDone" class="font-serif font-bold text-2xl text-forest">0</p><p class="text-xs text-gray-600">Packed</p></div>
+          <div><p id="statLeft" class="font-serif font-bold text-2xl text-forest">0</p><p class="text-xs text-gray-600">Remaining</p></div>
+          <div><p id="statPct" class="font-serif font-bold text-2xl text-forest">0%</p><p class="text-xs text-gray-600">Complete</p></div>
+        </div>
+        <div class="mt-3 h-3 rounded-full bg-forest/10 overflow-hidden" role="progressbar" id="checkBar" aria-label="Overall checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="checkBarFill" class="h-full bg-forest rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+        <p id="checkSync" class="mt-2 text-xs text-gray-600" aria-live="polite"></p>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2 no-print" role="tablist" aria-label="Checklist type">
+        <button type="button" role="tab" id="tab-packing" aria-controls="checkPanel" aria-selected="true" data-tab="packing" class="btn btn-sm">Packing</button>
+        <button type="button" role="tab" id="tab-docs" aria-controls="checkPanel" aria-selected="false" data-tab="docs" class="btn btn-sm">Travel documents</button>
+      </div>
+
+      <div class="mt-3 flex flex-col md:flex-row gap-2 no-print">
+        <label for="checkSearch" class="sr-only">Search items</label>
+        <input id="checkSearch" type="search" class="field md:flex-1" placeholder="Search items…" />
+        <div class="flex rounded-xl border border-forest/25 overflow-hidden shrink-0" role="group" aria-label="Show">
+          <button type="button" data-filter="all" class="px-3 min-h-[44px] text-sm font-semibold">All</button>
+          <button type="button" data-filter="remaining" class="px-3 min-h-[44px] text-sm font-semibold">Remaining</button>
+          <button type="button" data-filter="packed" class="px-3 min-h-[44px] text-sm font-semibold">Done</button>
+        </div>
+      </div>
+
+      <div id="checkPanel" role="tabpanel" class="mt-4 grid md:grid-cols-2 gap-4"></div>
+
+      <form id="checkAddForm" class="mt-4 flex flex-col sm:flex-row gap-2 no-print">
+        <label for="checkAddCat" class="sr-only">Category</label>
+        <select id="checkAddCat" class="field sm:w-56"></select>
+        <label for="checkAddName" class="sr-only">New item</label>
+        <input id="checkAddName" class="field sm:flex-1" placeholder="Add your own item…" maxlength="100" required />
+        <button type="submit" class="btn-primary">+ Add item</button>
+      </form>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="section" aria-labelledby="galTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">Shared memories • travellers only</p>
+          <h2 id="galTitle" class="section-title">Photo Gallery</h2>
+        </div>
+        <button id="uploadOpenBtn" type="button" class="btn-primary btn-sm" hidden>+ Upload photos</button>
+      </div>
+      <div id="galFilters" hidden class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 no-print">
+        <div><label for="galDate" class="label text-xs">Date</label><select id="galDate" class="field"></select></div>
+        <div><label for="galTag" class="label text-xs">Place</label><select id="galTag" class="field"></select></div>
+        <div><label for="galWho" class="label text-xs">Show</label>
+          <select id="galWho" class="field"><option value="all">Everyone's photos</option><option value="mine">My uploads</option><option value="memory">In memory book</option></select></div>
+      </div>
+      <div id="galGrid" class="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-3" aria-live="polite"></div>
+    </section>
+
+    <!-- Expenses -->
+    <section id="expenses" class="section" aria-labelledby="expTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">Group accounts • travellers only</p>
+          <h2 id="expTitle" class="section-title">Expense Tracker</h2>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button id="expAddBtn" type="button" class="btn-primary btn-sm" hidden>+ Add entry</button>
+          <button id="expLogBtn" type="button" class="btn-ghost btn-sm" hidden>Change log</button>
+          <button id="expExportBtn" type="button" class="btn-ghost btn-sm" hidden>Export CSV</button>
+        </div>
+      </div>
+      <div id="expBody" class="mt-4" aria-live="polite"></div>
+    </section>
+
+    <!-- Memory book -->
+    <section id="memory" class="section" aria-labelledby="memTitle">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-forest/10 pb-4">
+        <div>
+          <p class="eyebrow">After the tour • travellers only</p>
+          <h2 id="memTitle" class="section-title">Tour Memory Book</h2>
+        </div>
+        <button id="memPrintBtn" type="button" class="btn-ghost btn-sm no-print" data-print-section="memory" hidden>Print / Save as PDF</button>
+      </div>
+      <div id="memBody" class="mt-4"></div>
+    </section>
+
+    <!-- Emergency -->
+    <section id="emergency" class="section border-rose-200" aria-labelledby="emTitle">
+      <div class="border-b border-rose-200 pb-4">
+        <p class="eyebrow text-rose-800">24×7 • works offline</p>
+        <h2 id="emTitle" class="section-title text-rose-900">Emergency Contacts</h2>
+      </div>
+
+      <h3 class="mt-5 font-sans text-sm font-bold uppercase tracking-wider text-charcoal">Faculty coordinators</h3>
+      <ul class="mt-2 grid sm:grid-cols-2 gap-3">
+        <li class="rounded-xl border border-gray-200 bg-ivory p-3 flex flex-wrap items-center justify-between gap-2">
+          <div><p class="font-bold">Prof. Ujjal Kumar Das</p><p class="text-xs text-gray-600">Head of Department</p></div>
+          <div class="flex gap-2"><a class="btn btn-sm bg-emerald-700 text-white hover:bg-emerald-800" href="tel:+918250341647" aria-label="Call Prof. Ujjal Kumar Das, 8250341647">Call 82503 41647</a><a class="btn btn-sm bg-white border border-gray-300" href="https://wa.me/918250341647" target="_blank" rel="noopener" aria-label="WhatsApp Prof. Ujjal Kumar Das">WhatsApp</a></div>
+        </li>
+        <li class="rounded-xl border border-gray-200 bg-ivory p-3 flex flex-wrap items-center justify-between gap-2">
+          <div><p class="font-bold">Prof. Barun Kumar Paul</p><p class="text-xs text-gray-600">Faculty coordinator</p></div>
+          <div class="flex gap-2"><a class="btn btn-sm bg-emerald-700 text-white hover:bg-emerald-800" href="tel:+917501106583" aria-label="Call Prof. Barun Kumar Paul, 7501106583">Call 75011 06583</a><a class="btn btn-sm bg-white border border-gray-300" href="https://wa.me/917501106583" target="_blank" rel="noopener" aria-label="WhatsApp Prof. Barun Kumar Paul">WhatsApp</a></div>
+        </li>
+        <li class="rounded-xl border border-gray-200 bg-ivory p-3 flex flex-wrap items-center justify-between gap-2">
+          <div><p class="font-bold">Prof. Ashraful Islam</p><p class="text-xs text-gray-600">Faculty coordinator</p></div>
+          <div class="flex gap-2"><a class="btn btn-sm bg-emerald-700 text-white hover:bg-emerald-800" href="tel:+918926612351" aria-label="Call Prof. Ashraful Islam, 8926612351">Call 89266 12351</a><a class="btn btn-sm bg-white border border-gray-300" href="https://wa.me/918926612351" target="_blank" rel="noopener" aria-label="WhatsApp Prof. Ashraful Islam">WhatsApp</a></div>
+        </li>
+        <li class="rounded-xl border border-gray-200 bg-ivory p-3 flex flex-wrap items-center justify-between gap-2">
+          <div><p class="font-bold">Prof. Rupa D Banerjee</p><p class="text-xs text-gray-600">Faculty coordinator</p></div>
+          <div class="flex gap-2"><a class="btn btn-sm bg-emerald-700 text-white hover:bg-emerald-800" href="tel:+919830607334" aria-label="Call Prof. Rupa D Banerjee, 9830607334">Call 98306 07334</a><a class="btn btn-sm bg-white border border-gray-300" href="https://wa.me/919830607334" target="_blank" rel="noopener" aria-label="WhatsApp Prof. Rupa D Banerjee">WhatsApp</a></div>
+        </li>
+        <li class="rounded-xl border border-gray-200 bg-ivory p-3 flex flex-wrap items-center justify-between gap-2">
+          <div><p class="font-bold">Prof. S Dutta</p><p class="text-xs text-gray-600">Faculty coordinator</p></div>
+          <div class="flex gap-2"><a class="btn btn-sm bg-emerald-700 text-white hover:bg-emerald-800" href="tel:+918768434156" aria-label="Call Prof. S Dutta, 8768434156">Call 87684 34156</a><a class="btn btn-sm bg-white border border-gray-300" href="https://wa.me/918768434156" target="_blank" rel="noopener" aria-label="WhatsApp Prof. S Dutta">WhatsApp</a></div>
+        </li>
+      </ul>
+
+      <h3 class="mt-6 font-sans text-sm font-bold uppercase tracking-wider text-charcoal">National helplines (India)</h3>
+      <ul class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <li><a class="flex flex-col items-start rounded-xl border-2 border-rose-300 bg-rose-50 p-3 hover:bg-rose-100" href="tel:112"><span class="text-2xl font-bold text-rose-800">112</span><span class="text-sm font-semibold">Emergency (police, fire, ambulance)</span></a></li>
+        <li><a class="flex flex-col items-start rounded-xl border border-rose-200 bg-white p-3 hover:bg-rose-50" href="tel:108"><span class="text-2xl font-bold text-rose-800">108</span><span class="text-sm font-semibold">Ambulance</span></a></li>
+        <li><a class="flex flex-col items-start rounded-xl border border-rose-200 bg-white p-3 hover:bg-rose-50" href="tel:101"><span class="text-2xl font-bold text-rose-800">101</span><span class="text-sm font-semibold">Fire</span></a></li>
+        <li><a class="flex flex-col items-start rounded-xl border border-rose-200 bg-white p-3 hover:bg-rose-50" href="tel:1091"><span class="text-2xl font-bold text-rose-800">1091</span><span class="text-sm font-semibold">Women helpline</span></a></li>
+        <li><a class="flex flex-col items-start rounded-xl border border-himalaya/40 bg-white p-3 hover:bg-himalaya/10" href="tel:139"><span class="text-2xl font-bold text-himalaya-dark">139</span><span class="text-sm font-semibold">Rail Madad (railway help &amp; medical)</span></a></li>
+        <li><a class="flex flex-col items-start rounded-xl border border-himalaya/40 bg-white p-3 hover:bg-himalaya/10" href="tel:182"><span class="text-2xl font-bold text-himalaya-dark">182</span><span class="text-sm font-semibold">RPF security on trains</span></a></li>
+      </ul>
+
+      <h3 class="mt-6 font-sans text-sm font-bold uppercase tracking-wider text-charcoal">Hotels</h3>
+      <p class="mt-2 text-sm text-gray-700">Hotel names and phone numbers have not been confirmed yet. Faculty will share them in Announcements.</p>
+
+      <h3 class="mt-6 font-sans text-sm font-bold uppercase tracking-wider text-charcoal">Nearby medical facilities</h3>
+      <ul class="mt-2 flex flex-wrap gap-2 text-sm">
+        <li><a class="btn-ghost btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=hospital%20near%20Ravangla%20Sikkim">Hospitals near Ravangla ↗</a></li>
+        <li><a class="btn-ghost btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=hospital%20near%20Namchi%20Sikkim">Hospitals near Namchi ↗</a></li>
+        <li><a class="btn-ghost btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=hospital%20near%20Pelling%20Sikkim">Hospitals near Pelling ↗</a></li>
+      </ul>
+      <p class="mt-1 text-xs text-gray-600">Map searches need internet. In an emergency, call 112 or 108 first, then a faculty coordinator.</p>
+
+      <h3 class="mt-6 font-sans text-sm font-bold uppercase tracking-wider text-charcoal">If something goes wrong</h3>
+      <ol class="mt-2 list-decimal pl-5 text-sm space-y-1 text-gray-800">
+        <li>Stay calm and stay where you are if you are separated from the group. Call any faculty coordinator.</li>
+        <li>For injury or illness call 108 (ambulance) or 112, then inform faculty.</li>
+        <li>On the train, use Rail Madad 139 for medical help and 182 for security. Tell faculty your coach and berth.</li>
+        <li>Keep your phone charged and carry your college ID and original photo ID at all times.</li>
+        <li>Never go near cliff edges, rivers or waterfalls beyond safety barriers, and don't wander off alone.</li>
+      </ol>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-forest text-ivory mt-16 border-t-4 border-amber py-12 px-4">
-    <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+  <footer class="bg-forest text-ivory mt-6">
+    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between gap-6">
       <div>
-        <h4 class="font-serif font-bold text-lg text-ivory">Department of Computer Science</h4>
-        <p class="text-xs text-ivory/70 mt-1">Srikrishna College, Bagula, Nadia, West Bengal • Educational Tour Nov 2026[cite: 1, 2]</p>
+        <p class="font-serif font-bold text-lg">Department of Computer Science</p>
+        <p class="text-sm text-ivory/80 mt-1">Srikrishna College, Bagula, Nadia, West Bengal • Educational Tour, November 2026</p>
+        <p class="text-xs text-ivory/70 mt-3">Map data © <a class="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors • Weather by Open-Meteo</p>
       </div>
-      <div class="flex items-center gap-4 text-xs">
-        <button onclick="toggleModal('emergencyModal')" class="text-amber hover:underline font-semibold">Emergency Contacts</button>
-        <button onclick="toggleModal('rosterModal')" class="text-amber hover:underline font-semibold">Group Roster (22)</button>
-        <a href="https://barunkrpaul.github.io/sikkim-tour/" class="text-amber hover:underline font-semibold">Live Site</a>
-      </div>
+      <nav aria-label="Footer" class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+        <a class="text-amber hover:underline" href="#emergency">Emergency contacts</a>
+        <a class="text-amber hover:underline" href="#itinerary">Itinerary</a>
+        <a class="text-amber hover:underline" href="#dashboard">My dashboard</a>
+      </nav>
     </div>
   </footer>
 
-  <!-- Lightbox Modal for Full Size Images -->
-  <div id="lightboxModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
-      <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white text-xl font-bold px-3 py-1 bg-white/20 hover:bg-white/40 rounded-full">✕ Close</button>
-      <img id="lightboxImg" src="" referrerpolicy="no-referrer" alt="Full size preview" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" />
-      <iframe id="lightboxPdf" src="" title="PDF preview" class="hidden w-[90vw] max-w-4xl h-[75vh] bg-white rounded-xl shadow-2xl"></iframe>
-      <p id="lightboxCaption" class="text-white text-sm mt-3 font-medium text-center"></p>
-      <a id="lightboxOpenLink" href="#" target="_blank" rel="noopener" class="text-amber text-xs mt-1 hover:underline">Open in Google Drive ↗</a>
-    </div>
-  </div>
+  <div id="toast" role="status" aria-live="polite" class="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:right-4 sm:w-96 z-[70] hidden rounded-xl px-4 py-3 text-sm font-medium shadow-xl"></div>
 
-  <!-- Roster Modal -->
-  <div id="rosterModal" class="fixed inset-0 z-50 hidden bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="px-6 py-4 bg-forest text-ivory flex justify-between items-center">
-        <div>
-          <h3 class="font-serif font-bold text-lg">Confirmed Berth & PNR List (22 Members)</h3>
-          <p class="text-xs text-ivory/70">Onward: 27575 Vande Bharat SL (B2) • Return: 13142 Teesta Torsha (S2)[cite: 2, 3]</p>
-        </div>
-        <button onclick="toggleModal('rosterModal')" class="text-ivory/80 hover:text-ivory text-base font-bold px-2 py-1">✕</button>
+  <!-- Upload dialog -->
+  <dialog id="uploadDialog" class="modal" aria-labelledby="uploadTitle">
+    <form id="uploadForm" method="dialog" class="p-5 sm:p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 id="uploadTitle" class="font-serif font-bold text-xl text-forest">Share tour photos</h2>
+        <button type="button" class="btn-ghost btn-sm" data-close aria-label="Close">✕</button>
       </div>
-      <div class="p-6 overflow-y-auto text-xs">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-ivory text-forest font-bold border-b border-forest/15">
-              <th class="py-2.5 px-3">#</th>
-              <th class="py-2.5 px-3">Name</th>
-              <th class="py-2.5 px-3">Category</th>
-              <th class="py-2.5 px-3">Mobile No.</th>
-              <th class="py-2.5 px-3">Onward Seat (B2)</th>
-              <th class="py-2.5 px-3">Return Seat (S2)</th>
-            </tr>
-          </thead>
-          <tbody id="rosterTableBody" class="divide-y divide-forest/10"></tbody>
-        </table>
+      <div>
+        <label id="dropZone" for="fileInput" class="block cursor-pointer rounded-xl border-2 border-dashed border-forest/30 bg-ivory px-4 py-6 text-center hover:border-forest">
+          <span class="block font-semibold text-forest">Drag &amp; drop files here, or tap to choose</span>
+          <span class="block text-xs text-gray-600 mt-1">JPG, PNG, WebP, GIF, HEIC or PDF • up to 20 MB each • you can paste a screenshot too</span>
+        </label>
+        <input id="fileInput" type="file" class="sr-only" multiple accept="image/*,.heic,.heif,application/pdf,.pdf" />
+        <ul id="fileList" class="mt-2 space-y-1 text-sm"></ul>
       </div>
-    </div>
-  </div>
+      <div><label for="upCaption" class="label">Caption</label><input id="upCaption" class="field" maxlength="140" placeholder="e.g. Buddha Park at sunrise" /></div>
+      <div class="grid grid-cols-2 gap-2">
+        <div><label for="upTag" class="label">Place</label><select id="upTag" class="field"></select></div>
+        <div><label for="upDate" class="label">Date taken</label><input id="upDate" type="date" class="field" /></div>
+      </div>
+      <label class="flex items-start gap-2 text-sm"><input id="upMemory" type="checkbox" class="mt-1 w-4 h-4 accent-forest" /> <span>Include in the Tour Memory Book. Only tick this if everyone recognisable in the photo is happy for it to be included.</span></label>
+      <div id="upProgress" hidden>
+        <div class="h-2 rounded-full bg-forest/10 overflow-hidden"><div id="upBar" class="h-full bg-forest transition-all" style="width:0%"></div></div>
+        <p id="upProgressText" class="mt-1 text-xs text-gray-700" aria-live="polite"></p>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" class="btn-ghost" data-close>Cancel</button>
+        <button id="upSubmit" type="submit" class="btn-primary" value="default">Upload</button>
+      </div>
+    </form>
+  </dialog>
 
-  <!-- Emergency Modal -->
-  <div id="emergencyModal" class="fixed inset-0 z-50 hidden bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="px-6 py-4 bg-rose-600 text-white flex justify-between items-center">
-        <div>
-          <h3 class="font-serif font-bold text-base">🚨 Emergency & Faculty Contact Directory</h3>
-          <p class="text-xs text-rose-100">Tap any number to dial instantly</p>
+  <!-- Lightbox -->
+  <dialog id="lightbox" class="w-screen h-screen max-w-none max-h-none m-0 p-0 bg-black/95 text-white" aria-label="Photo viewer">
+    <div class="h-full flex flex-col">
+      <div class="flex items-center justify-between gap-2 p-3">
+        <p id="lbCount" class="text-sm text-white/80"></p>
+        <div class="flex gap-2">
+          <a id="lbOpen" class="btn btn-sm bg-white/15 hover:bg-white/25" target="_blank" rel="noopener">Open original ↗</a>
+          <button type="button" class="btn btn-sm bg-white/15 hover:bg-white/25" data-close aria-label="Close viewer">✕ Close</button>
         </div>
-        <button onclick="toggleModal('emergencyModal')" class="text-white/80 hover:text-white font-bold px-2 py-1">✕</button>
       </div>
-      <div class="p-6 overflow-y-auto space-y-6 text-xs">
-        <div>
-          <h4 class="font-bold text-charcoal uppercase tracking-wider mb-2.5">1. Faculty Coordinators (Srikrishna College)</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="p-3 rounded-xl border border-gray-200 bg-ivory flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">Prof. Ujjal Kumar Das (HOD)</div><div class="text-gray-500">B2-8 SU • S2-17 L</div></div>
-              <a href="tel:8250341647" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg">📞 Call</a>
-            </div>
-            <div class="p-3 rounded-xl border border-gray-200 bg-ivory flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">Prof. Barun Kumar Paul</div><div class="text-gray-500">B2-2 M • S2-18 M</div></div>
-              <a href="tel:7501106583" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg">📞 Call</a>
-            </div>
-            <div class="p-3 rounded-xl border border-gray-200 bg-ivory flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">Prof. Ashraful Islam</div><div class="text-gray-500">B2-67 U • S2-19 U</div></div>
-              <a href="tel:8926612351" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg">📞 Call</a>
-            </div>
-            <div class="p-3 rounded-xl border border-gray-200 bg-ivory flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">Prof. Rupa D Banerjee</div><div class="text-gray-500">B2-3 U • S2-20 L</div></div>
-              <a href="tel:9830607334" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg">📞 Call</a>
-            </div>
-            <div class="p-3 rounded-xl border border-gray-200 bg-ivory flex justify-between items-center sm:col-span-2">
-              <div><div class="font-bold text-charcoal">Prof. S Dutta</div><div class="text-gray-500">B2-5 M • S2-21 M</div></div>
-              <a href="tel:8768434156" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg">📞 Call</a>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-charcoal uppercase tracking-wider mb-2.5">2. Indian Railways & National Emergency</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-3 rounded-xl border border-himalaya/30 bg-himalaya/5 flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">Railway Helpline</div><div class="text-gray-500">Enquiry & Medical</div></div>
-              <a href="tel:139" class="px-3 py-1.5 bg-himalaya text-white font-bold rounded-lg">📞 139</a>
-            </div>
-            <div class="p-3 rounded-xl border border-himalaya/30 bg-himalaya/5 flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">RPF Security</div><div class="text-gray-500">Train Safety</div></div>
-              <a href="tel:182" class="px-3 py-1.5 bg-himalaya text-white font-bold rounded-lg">📞 182</a>
-            </div>
-            <div class="p-3 rounded-xl border border-rose-300 bg-rose-50 flex justify-between items-center">
-              <div><div class="font-bold text-charcoal">National SOS</div><div class="text-gray-500">Police & Ambulance</div></div>
-              <a href="tel:112" class="px-3 py-1.5 bg-rose-600 text-white font-bold rounded-lg">📞 112</a>
-            </div>
-          </div>
-        </div>
+      <div class="relative flex-1 min-h-0 flex items-center justify-center px-2">
+        <button id="lbPrev" type="button" class="absolute left-2 z-10 btn bg-white/15 hover:bg-white/25" aria-label="Previous photo">‹</button>
+        <img id="lbImg" alt="" referrerpolicy="no-referrer" class="max-w-full max-h-full object-contain" />
+        <iframe id="lbPdf" title="PDF preview" hidden class="w-full h-full max-w-4xl bg-white rounded-lg"></iframe>
+        <button id="lbNext" type="button" class="absolute right-2 z-10 btn bg-white/15 hover:bg-white/25" aria-label="Next photo">›</button>
+      </div>
+      <div class="p-4 text-center">
+        <p id="lbCaption" class="font-semibold"></p>
+        <p id="lbMeta" class="text-sm text-white/75"></p>
       </div>
     </div>
-  </div>
+  </dialog>
 
-  <!-- Upload Photo Modal with Automatic Compression -->
-  <div id="uploadPhotoModal" class="fixed inset-0 z-50 hidden bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl max-w-md w-full max-h-[92vh] overflow-y-auto p-6 shadow-2xl space-y-4">
-      <div class="flex justify-between items-center border-b border-forest/10 pb-3">
-        <h3 class="font-serif font-bold text-charcoal text-base">Share Tour Memory</h3>
-        <button onclick="toggleModal('uploadPhotoModal')" class="text-gray-400 hover:text-charcoal font-bold">✕</button>
+  <!-- Generic form dialog (announcements, expenses, photo edits) -->
+  <dialog id="formDialog" class="modal" aria-labelledby="formDialogTitle">
+    <form id="formDialogForm" method="dialog" class="p-5 sm:p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 id="formDialogTitle" class="font-serif font-bold text-xl text-forest"></h2>
+        <button type="button" class="btn-ghost btn-sm" data-close aria-label="Close">✕</button>
       </div>
-      <form onsubmit="handlePhotoUpload(event)" class="space-y-3.5 text-xs">
-        <div>
-          <label class="block font-semibold text-charcoal mb-1">Photos or PDFs:</label>
-          <label id="photoDropZone" for="photoFileInput" class="block cursor-pointer rounded-xl border-2 border-dashed border-forest/30 bg-ivory px-4 py-6 text-center transition hover:border-forest hover:bg-forest/5">
-            <span class="block text-2xl">📤</span>
-            <span class="block font-semibold text-forest mt-1">Drag &amp; drop files here, or tap to choose</span>
-            <span class="block text-[11px] text-gray-500 mt-0.5">JPG, PNG, WebP, GIF, HEIC or PDF &bull; select many at once &bull; you can also paste a screenshot</span>
-          </label>
-          <input type="file" id="photoFileInput" accept="image/*,.heic,.heif,application/pdf,.pdf" multiple class="hidden" />
-          <ul id="selectedFilesList" class="mt-2 space-y-1"></ul>
-          <label class="block font-semibold text-charcoal mt-3 mb-1">Or paste an image URL:</label>
-          <input type="url" id="photoUrlInput" placeholder="https://images.unsplash.com/photo-..." class="w-full px-3.5 py-2.5 bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest" />
-        </div>
-        <div>
-          <label class="block font-semibold text-charcoal mb-1">Your Name:</label>
-          <input type="text" id="photoUploaderName" required placeholder="e.g., Barun Kr Paul" class="w-full px-3.5 py-2.5 bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest" />
-        </div>
-        <div>
-          <label class="block font-semibold text-charcoal mb-1">Caption / Location:</label>
-          <input type="text" id="photoCaption" required placeholder="e.g., Buddha Park, Ravangla" class="w-full px-3.5 py-2.5 bg-ivory border border-forest/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest" />
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="toggleModal('uploadPhotoModal')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-charcoal rounded-xl font-medium">Cancel</button>
-          <button type="submit" id="uploadSubmitBtn" class="px-4 py-2 bg-forest hover:bg-forest/90 text-ivory rounded-xl font-semibold">Share Photo</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      <div id="formDialogFields" class="space-y-3"></div>
+      <p id="formDialogError" role="alert" class="text-sm text-rose-800"></p>
+      <div class="flex justify-end gap-2">
+        <button type="button" class="btn-ghost" data-close>Cancel</button>
+        <button id="formDialogSubmit" type="submit" class="btn-primary" value="default">Save</button>
+      </div>
+    </form>
+  </dialog>
 
-  <!-- JavaScript Application Logic -->
-  <script>
-    const STORAGE_KEY = 'packmate_sikkim_cs_tour_2026_v10';
-    // Shared photo gallery stored in Google Drive (see gallery-apps-script.gs).
-    // Paste your Apps Script "Web app" URL here after deploying it.
-    const GALLERY_API_URL = 'https://script.google.com/macros/s/AKfycbwBhOheb84TTzpqXLIzj4BMx0N7JWB20W4cZO3scK_BLcTQsAG2ksWcZkJRPPMpOxeQ/exec';
-
-    const tourMembers = [
-      { sl: 1, name: 'Ujjal Kumar Das', role: 'Faculty/Staff (HOD)', sem: 'Faculty', ageSex: '43/M', mobile: '8250341647', onPnr: '6511081358', onSeat: 'B2-8 (Side Upper)', retPnr: '6211082046', retSeat: 'S2-17 (Lower)', note: '' },
-      { sl: 2, name: 'Barun Kumar Paul', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '35/M', mobile: '7501106583', onPnr: '6511081358', onSeat: 'B2-2 (Middle)', retPnr: '6211082046', retSeat: 'S2-18 (Middle)', note: '' },
-      { sl: 3, name: 'Ashraful Islam', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '32/M', mobile: '8926612351', onPnr: '6511081358', onSeat: 'B2-67 (Upper)', retPnr: '6211082046', retSeat: 'S2-19 (Upper)', note: '' },
-      { sl: 4, name: 'Rupa D Banerjee', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '50/F', mobile: '9830607334', onPnr: '6511081358', onSeat: 'B2-3 (Upper)', retPnr: '6211082046', retSeat: 'S2-20 (Lower)', note: '' },
-      { sl: 5, name: 'S Dutta', role: 'Faculty/Staff', sem: 'Faculty', ageSex: '32/F', mobile: '8768434156', onPnr: '6511081358', onSeat: 'B2-5 (Middle)', retPnr: '6211082046', retSeat: 'S2-21 (Middle)', note: '' },
-      { sl: 6, name: 'Jayita Tikadar', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '7811886916', onPnr: '6511080813', onSeat: 'B2-66 (Middle)', retPnr: '6411082334', retSeat: 'S2-62 (Upper)', note: 'Name printed as JAYITA TIKADAR. Carry original photo ID.' },
-      { sl: 7, name: 'Diya Ghosh', role: 'Student', sem: '1st Sem', ageSex: '19/F', mobile: '6295134819', onPnr: '6511080813', onSeat: 'B2-10 (Middle)', retPnr: '6411082334', retSeat: 'S2-58 (Middle)', note: '' },
-      { sl: 8, name: 'Pratap Paul', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9749411478', onPnr: '6211081808', onSeat: 'B2-61 (Middle)', retPnr: '6511082206', retSeat: 'S2-9 (Lower)', note: 'Printed as PRATAP PAL on Return PNR. Carry original photo ID.' },
-      { sl: 9, name: 'Arupan Kr Biswas', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9382185857', onPnr: '6511080813', onSeat: 'B2-14 (Upper)', retPnr: '6411082334', retSeat: 'S2-61 (Middle)', note: '' },
-      { sl: 10, name: 'Nilesh Pal', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '8101496394', onPnr: '6511080813', onSeat: 'B2-11 (Upper)', retPnr: '6411082334', retSeat: 'S2-59 (Upper)', note: '' },
-      { sl: 11, name: 'Surya Das', role: 'Student', sem: '1st Sem', ageSex: '19/M', mobile: '9378160982', onPnr: '6311081463', onSeat: 'B2-19 (Upper)', retPnr: '6111082120', retSeat: 'S2-2 (Middle)', note: '' },
-      { sl: 12, name: 'Bhupati Mollick', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8250911596', onPnr: '6211081808', onSeat: 'B2-62 (Upper)', retPnr: '6511082206', retSeat: 'S2-12 (Lower)', note: '' },
-      { sl: 13, name: 'Rahul Biswas', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8670966550', onPnr: '6211081808', onSeat: 'B2-54 (Upper)', retPnr: '6511082206', retSeat: 'S2-13 (Middle)', note: '' },
-      { sl: 14, name: 'Dipendu Sadhukan', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '9735659316', onPnr: '6211081808', onSeat: 'B2-51 (Upper)', retPnr: '6511082206', retSeat: 'S2-11 (Upper)', note: '' },
-      { sl: 15, name: 'Joy Biswas', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '8670666864', onPnr: '6311081900', onSeat: 'B2-22 (Upper)', retPnr: '6111082120', retSeat: 'S2-4 (Lower)', note: '' },
-      { sl: 16, name: 'Bibhan Majumder', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '6295013578', onPnr: '6211081808', onSeat: 'B2-53 (Middle)', retPnr: '6511082206', retSeat: 'S2-14 (Upper)', note: '' },
-      { sl: 17, name: 'Bikram Saha', role: 'Student', sem: '5th Sem', ageSex: '21/M', mobile: '7318944470', onPnr: '6311081463', onSeat: 'B2-21 (Middle)', retPnr: '6111082120', retSeat: 'S2-1 (Lower)', note: 'Name printed as BIKRAM SAHA. Carry original photo ID.' },
-      { sl: 18, name: 'Sudip Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7501118644', onPnr: '6311081463', onSeat: 'B2-18 (Middle)', retPnr: '6111082120', retSeat: 'S2-8 (Side Upper)', note: '' },
-      { sl: 19, name: 'Soyon Das', role: 'Student', sem: '7th Sem', ageSex: '21/M', mobile: '7865004293', onPnr: '6511081358', onSeat: 'B2-6 (Upper)', retPnr: '6211082046', retSeat: 'S2-22 (Upper)', note: 'Printed as SHOYON DAS on Onward PNR. Carry original photo ID.' },
-      { sl: 20, name: 'Srija Biswas', role: 'Student', sem: '7th Sem', ageSex: '21/F', mobile: '7908137501', onPnr: '6511080813', onSeat: 'B2-13 (Middle)', retPnr: '6411082334', retSeat: 'S2-57 (Lower)', note: '' },
-      { sl: 21, name: 'Nipobithi Roy', role: 'Student', sem: '7th Sem', ageSex: '21/F', mobile: '9832360055', onPnr: '6511080813', onSeat: 'B2-16 (Side Upper)', retPnr: '6411082334', retSeat: 'S2-60 (Lower)', note: '' },
-      { sl: 22, name: 'Sajib Mondal', role: 'Student', sem: 'Update Sem', ageSex: '19/M', mobile: '', onPnr: '6211081808', onSeat: 'B2-50 (Middle)', retPnr: '6511082206', retSeat: 'S2-10 (Middle)', note: 'Please provide mobile number and semester to faculty.' }
-    ];
-
-    function getDefaultCategories() {
-      return [
-        {
-          id: 'docs-tickets',
-          name: '1. Mandatory IDs, Tickets & Cash',
-          items: [
-            { id: 'd1', name: 'Original Govt. Photo ID (Voter ID / Aadhaar / PAN / Driving License)', qty: 1, packed: false },
-            { id: 'd2', name: 'Srikrishna College Identity Card (Mandatory for all students & faculty)', qty: 1, packed: false },
-            { id: 'd3', name: 'Photocopies of Photo ID & 2 Passport-Size Photos (for Sikkim permits/hotels)', qty: 2, packed: false },
-            { id: 'd4', name: 'Digital/Printed Train Tickets (Coach B2 Onward & Coach S2 Return)', qty: 1, packed: false },
-            { id: 'd5', name: 'Printed Principal Approval Letter & 22-Member Roster (Faculty Coordinators)', qty: 1, packed: false },
-            { id: 'd6', name: 'Cash in Small Denominations (for Ravangla, Pelling & Namchi stalls) + UPI', qty: 1, packed: false }
-          ]
-        },
-        {
-          id: 'winter-clothing',
-          name: '2. Sikkim Winter Clothing (4°C to 12°C)',
-          items: [
-            { id: 'w1', name: 'Heavy Down Jacket / Windproof Winter Jacket', qty: 1, packed: false },
-            { id: 'w2', name: 'Thermal Innerwear Sets (Upper & Lower)', qty: 2, packed: false },
-            { id: 'w3', name: 'Sweaters / Fleece Hoodies / Pullovers', qty: 2, packed: false },
-            { id: 'w4', name: 'Daytime T-Shirts / Shirts / Kurtas & Jeans / Trousers', qty: 4, packed: false },
-            { id: 'w5', name: 'Light Blanket / Warm Shawl (Mandatory for Return Non-AC Sleeper Coach S2)', qty: 1, packed: false },
-            { id: 'w6', name: 'Woolen Cap (Beanie), Muffler & Warm Gloves', qty: 1, packed: false },
-            { id: 'w7', name: 'Woolen & Cotton Socks', qty: 4, packed: false },
-            { id: 'w8', name: 'Comfortable Walking Sneakers/Shoes + Room Slippers', qty: 2, packed: false }
-          ]
-        },
-        {
-          id: 'electronics',
-          name: '3. Electronics & Power Backup',
-          items: [
-            { id: 'e1', name: 'Smartphone + Wall Charger & Charging Cable', qty: 1, packed: false },
-            { id: 'e2', name: 'Power Bank (10,000mAh–20,000mAh for long train & hill road journeys)', qty: 1, packed: false },
-            { id: 'e3', name: '3-Pin Multi-Plug Splitter (for shared train charging sockets in B2 & S2)', qty: 1, packed: false },
-            { id: 'e4', name: 'Earphones / Headphones', qty: 1, packed: false },
-            { id: 'e5', name: 'iPad / Tablet / Camera (Optional)', qty: 1, packed: false }
-          ]
-        },
-        {
-          id: 'toiletries',
-          name: '4. Toiletries & Mountain Skincare',
-          items: [
-            { id: 't1', name: 'Cold Cream / Moisturizing Lotion & Lip Balm (for dry hill weather)', qty: 1, packed: false },
-            { id: 't2', name: 'Face Wash, Sunscreen & Face Mist', qty: 1, packed: false },
-            { id: 't3', name: 'Toothbrush, Toothpaste, Comb & Deodorant', qty: 1, packed: false },
-            { id: 't4', name: 'Paper Soap, Pocket Hand Sanitizer & Wet Wipes (for train journey)', qty: 2, packed: false },
-            { id: 't5', name: 'Quick-Dry Towel', qty: 1, packed: false }
-          ]
-        },
-        {
-          id: 'health-train',
-          name: '5. Hill Medicines & Train Essentials',
-          items: [
-            { id: 'h1', name: 'Motion Sickness Medicine (Avomine/Ondansetron for winding NJP–Pelling hill roads)', qty: 2, packed: false },
-            { id: 'h2', name: 'Paracetamol, Antacids, Cold Tablets, ORS Packets & Band-Aids', qty: 1, packed: false },
-            { id: 'h3', name: 'Personal Regular Medications (if any)', qty: 1, packed: false },
-            { id: 'h4', name: 'Reusable Water Bottle / Hot Water Flask', qty: 1, packed: false },
-            { id: 'h5', name: 'Small Padlock & Chain for Luggage (Return Sleeper Coach S2)', qty: 2, packed: false },
-            { id: 'h6', name: 'Dry Snacks / Biscuits / Cakes for Evening Train Boarding at Bandel Jn', qty: 2, packed: false }
-          ]
-        }
-      ];
-    }
-
-    let state = {
-      selectedMemberSl: 2,
-      categories: getDefaultCategories(),
-      filter: 'all',
-      photos: [],
-      galleryStatus: 'loading'
-    };
-
-    function loadState() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          state.selectedMemberSl = parsed.selectedMemberSl || 2;
-          state.categories = parsed.categories || getDefaultCategories();
-        } catch (e) {
-          state.categories = getDefaultCategories();
-        }
-      }
-      populateMemberDropdown();
-      populateCategoryDropdown();
-      populateRosterModal();
-      renderMemberCard();
-      renderChecklist();
-      renderGallery();
-      loadGallery();
-    }
-
-    // Photos live in Google Drive, so only the checklist is kept in this browser
-    function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          selectedMemberSl: state.selectedMemberSl,
-          categories: state.categories
-        }));
-      } catch (err) {
-        console.warn("Could not save checklist to this browser.", err);
-      }
-    }
-
-    function populateMemberDropdown() {
-      const select = document.getElementById('memberSelect');
-      select.innerHTML = tourMembers.map(m =>
-        `<option value="${m.sl}" ${m.sl === Number(state.selectedMemberSl) ? 'selected' : ''}>
-          #${m.sl} - ${m.name} (${m.sem})
-        </option>`
-      ).join('');
-    }
-
-    function selectMember(sl) {
-      state.selectedMemberSl = Number(sl);
-      saveState();
-      renderMemberCard();
-    }
-
-    function renderMemberCard() {
-      const member = tourMembers.find(m => m.sl === Number(state.selectedMemberSl)) || tourMembers[0];
-      document.getElementById('memberTicketCard').innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div class="p-4 rounded-xl bg-ivory border border-forest/20">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-forest uppercase">Onward • 17 Nov 2026</span>
-              <span class="font-mono bg-white px-2.5 py-0.5 rounded border border-forest/20 text-forest font-bold">PNR: ${member.onPnr}</span>
-            </div>
-            <p class="font-semibold text-charcoal mt-1">27575 / Vande Bharat SL • Third AC (3A)</p>
-            <p class="text-gray-600 mt-0.5">Bandel Jn (18:58) → New Jalpaiguri Jn (01:40, 18 Nov)</p>
-            <div class="mt-3 pt-2.5 border-t border-forest/10 flex justify-between items-center">
-              <span>Assigned Berth: <strong class="text-forest text-sm">${member.onSeat}</strong></span>
-              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded">CNF</span>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-amber/10 border border-amber/30">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-amber-900 uppercase">Return • 21 Nov 2026</span>
-              <span class="font-mono bg-white px-2.5 py-0.5 rounded border border-amber/30 text-amber-900 font-bold">PNR: ${member.retPnr}</span>
-            </div>
-            <p class="font-semibold text-charcoal mt-1">13142 / Teesta Torsha Express • Sleeper (SL)</p>
-            <p class="text-gray-600 mt-0.5">Falakata (12:55) → Sealdah (03:35, 22 Nov)</p>
-            <div class="mt-3 pt-2.5 border-t border-amber/20 flex justify-between items-center">
-              <span>Assigned Berth: <strong class="text-amber-950 text-sm">${member.retSeat}</strong></span>
-              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded">CNF</span>
-            </div>
-          </div>
-        </div>
-        ${member.note ? `<div class="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-medium">⚠️ <strong>Notice for ${member.name}:</strong>${member.note}</div>` : ''}
-      `;
-    }
-
-    function populateRosterModal() {
-      document.getElementById('rosterTableBody').innerHTML = tourMembers.map(m => `
-        <tr class="${m.sem === 'Faculty' ? 'bg-forest/5 font-medium' : 'hover:bg-gray-50'}">
-          <td class="py-2.5 px-3">${m.sl}</td>
-          <td class="py-2.5 px-3 font-bold text-charcoal">${m.name}</td>
-          <td class="py-2.5 px-3">${m.sem} (${m.ageSex})</td>
-          <td class="py-2.5 px-3">${m.mobile ? `<a href="tel:${m.mobile}" class="text-himalaya font-mono font-bold hover:underline">📞 ${m.mobile}</a>` : `<span class="text-rose-600 italic">Pending</span>`}</td>
-          <td class="py-2.5 px-3"><span class="font-semibold">${m.onSeat}</span> <span class="text-gray-400">(${m.onPnr})</span></td>
-          <td class="py-2.5 px-3"><span class="font-semibold">${m.retSeat}</span> <span class="text-gray-400">(${m.retPnr})</span></td>
-        </tr>
-      `).join('');
-    }
-
-    function populateCategoryDropdown() {
-      document.getElementById('newCategorySelect').innerHTML = state.categories
-        .map(cat => `<option value="${cat.id}">${cat.name}</option>`)
-        .join('');
-    }
-
-    function setFilter(filterType) {
-      state.filter = filterType;
-      ['all', 'remaining', 'packed'].forEach(type => {
-        const btn = document.getElementById(`filter-${type}`);
-        if (type === filterType) {
-          btn.className = 'px-3 py-2 text-xs font-medium bg-forest text-ivory';
-        } else {
-          btn.className = 'px-3 py-2 text-xs font-medium bg-transparent text-charcoal hover:bg-forest/10';
-        }
-      });
-      renderChecklist();
-    }
-
-    function toggleItem(catId, itemId) {
-      const cat = state.categories.find(c => c.id === catId);
-      if (!cat) return;
-      const item = cat.items.find(i => i.id === itemId);
-      if (!item) return;
-      item.packed = !item.packed;
-      saveState();
-      renderChecklist(true);
-    }
-
-    function changeQty(catId, itemId, delta) {
-      const cat = state.categories.find(c => c.id === catId);
-      if (!cat) return;
-      const item = cat.items.find(i => i.id === itemId);
-      if (!item) return;
-      item.qty = Math.max(1, item.qty + delta);
-      saveState();
-      renderChecklist();
-    }
-
-    function deleteItem(catId, itemId) {
-      const cat = state.categories.find(c => c.id === catId);
-      if (!cat) return;
-      cat.items = cat.items.filter(i => i.id !== itemId);
-      saveState();
-      renderChecklist();
-    }
-
-    function addItem(e) {
-      e.preventDefault();
-      const catId = document.getElementById('newCategorySelect').value;
-      const input = document.getElementById('newItemInput');
-      const name = input.value.trim();
-      if (!name) return;
-
-      const cat = state.categories.find(c => c.id === catId);
-      if (cat) {
-        cat.items.push({ id: 'custom-' + Date.now(), name, qty: 1, packed: false });
-        input.value = '';
-        saveState();
-        renderChecklist();
-      }
-    }
-
-    function resetChecklist() {
-      if (confirm('Reset all packing items back to default?')) {
-        state.categories = getDefaultCategories();
-        saveState();
-        renderChecklist();
-      }
-    }
-
-    function toggleModal(id) {
-      document.getElementById(id).classList.toggle('hidden');
-    }
-
-    function toggleAccordion(id) {
-      const content = document.getElementById(`content-${id}`);
-      const icon = document.getElementById(`icon-${id}`);
-      content.classList.toggle('hidden');
-      icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
-    }
-
-    // ---------- Upload: drag & drop, multiple files, photos and PDFs ----------
-    const MAX_UPLOAD_MB = 20;
-    let selectedFiles = [];
-
-    function fileMimeType(file) {
-      if (file.type) return file.type;
-      if (/\.pdf$/i.test(file.name)) return 'application/pdf';
-      if (/\.(heic|heif)$/i.test(file.name)) return 'image/heic';
-      return '';
-    }
-
-    function addSelectedFiles(fileList) {
-      const files = Array.from(fileList);
-      const accepted = files.filter(f => /^(image\/|application\/pdf$)/.test(fileMimeType(f)));
-      const skipped = files.filter(f => !accepted.includes(f));
-      selectedFiles = selectedFiles.concat(accepted);
-      if (skipped.length) alert('Only photos and PDFs can be shared. Skipped: ' + skipped.map(f => f.name).join(', '));
-      renderSelectedFiles();
-    }
-
-    function removeSelectedFile(index) {
-      selectedFiles.splice(index, 1);
-      renderSelectedFiles();
-    }
-
-    function renderSelectedFiles() {
-      document.getElementById('selectedFilesList').innerHTML = selectedFiles.map((f, i) => `
-        <li class="flex items-center gap-2 px-3 py-1.5 bg-forest/5 rounded-lg">
-          <span>${fileMimeType(f) === 'application/pdf' ? '📄' : '🖼️'}</span>
-          <span class="flex-1 truncate text-charcoal">${escapeHtml(f.name)}</span>
-          <span class="text-gray-400 text-[10px]">${(f.size / 1048576).toFixed(1)} MB</span>
-          <button type="button" onclick="removeSelectedFile(${i})" title="Remove" class="text-gray-400 hover:text-rose-600 font-bold px-1">✕</button>
-        </li>
-      `).join('');
-      const submitBtn = document.getElementById('uploadSubmitBtn');
-      if (!submitBtn.disabled) submitBtn.textContent = selectedFiles.length > 1 ? `Share ${selectedFiles.length} Files` : 'Share Photo';
-    }
-
-    function setupUploadInputs() {
-      const zone = document.getElementById('photoDropZone');
-      const input = document.getElementById('photoFileInput');
-      input.addEventListener('change', () => {
-        addSelectedFiles(input.files);
-        input.value = '';
-      });
-      ['dragenter', 'dragover'].forEach(type => zone.addEventListener(type, e => {
-        e.preventDefault();
-        zone.classList.add('border-forest', 'bg-forest/10');
-      }));
-      ['dragleave', 'drop'].forEach(type => zone.addEventListener(type, e => {
-        e.preventDefault();
-        zone.classList.remove('border-forest', 'bg-forest/10');
-      }));
-      zone.addEventListener('drop', e => addSelectedFiles(e.dataTransfer.files));
-      // Paste a screenshot or copied photo while the upload box is open
-      document.addEventListener('paste', e => {
-        if (document.getElementById('uploadPhotoModal').classList.contains('hidden')) return;
-        const files = Array.from(e.clipboardData.files || []);
-        if (files.length) {
-          e.preventDefault();
-          addSelectedFiles(files);
-        }
-      });
-    }
-
-    function readAsDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('Could not read the file'));
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function loadImage(src) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error('Browser cannot open this image'));
-        img.src = src;
-      });
-    }
-
-    // Photos are resized to max 1600px JPEG; PDFs, GIFs and images the browser can't open (e.g. HEIC) are sent as-is
-    async function prepareFile(file) {
-      const mime = fileMimeType(file);
-      const original = (await readAsDataUrl(file)).replace(/^data:[^;,]*/, 'data:' + mime);
-      if (mime !== 'application/pdf' && mime !== 'image/gif') {
-        try {
-          const img = await loadImage(original);
-          const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          const ctx = canvas.getContext('2d');
-          ctx.fillStyle = '#ffffff'; // transparent PNGs get a white background instead of black
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          return canvas.toDataURL('image/jpeg', 0.8);
-        } catch (err) {
-          // fall through and upload the original file
-        }
-      }
-      if (file.size > MAX_UPLOAD_MB * 1048576) throw new Error(`File is larger than ${MAX_UPLOAD_MB} MB`);
-      return original;
-    }
-
-    async function handlePhotoUpload(e) {
-      e.preventDefault();
-      const urlInput = document.getElementById('photoUrlInput').value.trim();
-      const uploader = document.getElementById('photoUploaderName').value.trim();
-      const caption = document.getElementById('photoCaption').value.trim();
-      const submitBtn = document.getElementById('uploadSubmitBtn');
-
-      const jobs = selectedFiles.map(file => ({ file }));
-      if (urlInput) jobs.push({ url: urlInput });
-      if (!jobs.length) {
-        alert('Please choose or drop a photo/PDF, or paste an image URL.');
-        return;
-      }
-
-      submitBtn.disabled = true;
-      const failed = [];
-      for (let i = 0; i < jobs.length; i++) {
-        submitBtn.textContent = `Uploading ${i + 1} of ${jobs.length}...`;
-        const job = jobs[i];
-        try {
-          const payload = job.file
-            ? { dataUrl: await prepareFile(job.file), fileName: job.file.name }
-            : { imageUrl: job.url };
-          state.photos = await callGalleryApi({ action: 'upload', uploader, caption, ...payload });
-          state.galleryStatus = 'ready';
-          renderGallery();
-        } catch (err) {
-          failed.push({ job, message: err.message });
-        }
-      }
-
-      // Keep only the files that failed so the user can retry them
-      selectedFiles = failed.filter(f => f.job.file).map(f => f.job.file);
-      if (!failed.some(f => f.job.url)) document.getElementById('photoUrlInput').value = '';
-      resetUploadButton();
-
-      if (failed.length) {
-        alert('These were not saved:\n' + failed.map(f => `• ${f.job.file ? f.job.file.name : f.job.url}: ${f.message}`).join('\n'));
-      } else {
-        toggleModal('uploadPhotoModal');
-        document.getElementById('photoCaption').value = '';
-      }
-    }
-
-    function resetUploadButton() {
-      document.getElementById('uploadSubmitBtn').disabled = false;
-      renderSelectedFiles();
-    }
-
-    // Sent as text/plain so the browser makes a simple request that Apps Script accepts
-    async function callGalleryApi(payload) {
-      if (!GALLERY_API_URL) throw new Error('Photo gallery is not connected yet (GALLERY_API_URL is empty).');
-      const res = payload
-        ? await fetch(GALLERY_API_URL, { method: 'POST', body: JSON.stringify(payload) })
-        : await fetch(GALLERY_API_URL);
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || 'Gallery request failed');
-      return data.photos;
-    }
-
-    async function loadGallery() {
-      try {
-        state.photos = await callGalleryApi();
-        state.galleryStatus = 'ready';
-      } catch (err) {
-        console.error(err);
-        state.galleryStatus = 'error';
-      }
-      renderGallery();
-    }
-
-    async function likePhoto(photoId) {
-      const p = state.photos.find(x => x.id === photoId);
-      if (!p) return;
-      p.likes++;
-      renderGallery();
-      try {
-        state.photos = await callGalleryApi({ action: 'like', id: photoId });
-      } catch (err) {
-        p.likes--;
-        alert('Like was not saved: ' + err.message);
-      }
-      renderGallery();
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    }
-
-    function openLightbox(index) {
-      const p = state.photos[index];
-      const isPdf = p.type === 'pdf';
-      const img = document.getElementById('lightboxImg');
-      const pdf = document.getElementById('lightboxPdf');
-      img.classList.toggle('hidden', isPdf);
-      pdf.classList.toggle('hidden', !isPdf);
-      img.src = isPdf ? '' : p.url;
-      pdf.src = isPdf ? `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/preview` : '';
-      document.getElementById('lightboxOpenLink').href = `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/view`;
-      document.getElementById('lightboxCaption').textContent = p.caption;
-      document.getElementById('lightboxModal').classList.remove('hidden');
-    }
-
-    function closeLightbox() {
-      document.getElementById('lightboxModal').classList.add('hidden');
-      document.getElementById('lightboxPdf').src = '';
-    }
-
-    function renderGallery() {
-      const grid = document.getElementById('galleryGrid');
-      if (state.galleryStatus === 'loading') {
-        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-gray-400">Loading photos...</div>`;
-        return;
-      }
-      if (state.galleryStatus === 'error') {
-        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-rose-600">Could not load photos. Check your internet connection and refresh.</div>`;
-        return;
-      }
-      if (state.photos.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-gray-400">No photos shared yet. Be the first to upload a memory!</div>`;
-        return;
-      }
-      grid.innerHTML = state.photos.map((p, i) => `
-        <div class="bg-ivory rounded-2xl border border-forest/15 overflow-hidden shadow-2xs flex flex-col">
-          <div class="h-52 bg-gray-100 overflow-hidden relative cursor-pointer" onclick="openLightbox(${i})">
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 text-xs"><span class="text-4xl">${p.type === 'pdf' ? '📄' : '🖼️'}</span>Preview loading...</div>
-            <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.caption)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" class="relative w-full h-full object-cover hover:scale-105 transition duration-300" />
-            ${p.type === 'pdf' ? `<span class="absolute top-2 left-2 px-2.5 py-1 bg-rose-600 text-white text-[10px] rounded-lg font-bold">PDF</span>` : ''}
-            <span class="absolute bottom-2 right-2 px-2.5 py-1 bg-charcoal/70 backdrop-blur-xs text-ivory text-[10px] rounded-lg font-medium">${escapeHtml(p.date)}</span>
-          </div>
-          <div class="p-4 flex flex-col flex-1 justify-between gap-3 text-xs">
-            <div>
-              <h4 class="font-serif font-bold text-base text-forest">${escapeHtml(p.caption)}</h4>
-              <p class="text-gray-500 text-[11px] mt-0.5">Shared by: <strong class="text-charcoal">${escapeHtml(p.uploader)}</strong></p>
-            </div>
-            <div class="pt-3 border-t border-forest/10 flex items-center justify-between">
-              <button onclick="likePhoto(state.photos[${i}].id)" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-semibold transition flex items-center gap-1">
-                <span>❤️</span> ${Number(p.likes) || 0} Likes
-              </button>
-              <button onclick="openLightbox(${i})" class="text-himalaya hover:underline font-semibold text-[11px]">${p.type === 'pdf' ? 'Open PDF' : 'View Full Size'}</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderChecklist(triggerConfettiIfDone = false) {
-      const container = document.getElementById('categoriesContainer');
-      const query = document.getElementById('searchInput').value.toLowerCase();
-
-      let totalItems = 0;
-      let packedItems = 0;
-
-      state.categories.forEach(cat => {
-        cat.items.forEach(item => {
-          totalItems++;
-          if (item.packed) packedItems++;
-        });
-      });
-
-      const pct = totalItems === 0 ? 0 : Math.round((packedItems / totalItems) * 100);
-      document.getElementById('overallBar').style.width = `${pct}%`;
-      document.getElementById('progressStats').textContent = `${packedItems} / ${totalItems} Packed (${pct}%)`;
-
-      if (triggerConfettiIfDone && totalItems > 0 && packedItems === totalItems && typeof confetti === 'function') {
-        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
-      }
-
-      container.innerHTML = state.categories.map(cat => {
-        const catTotal = cat.items.length;
-        const catPacked = cat.items.filter(i => i.packed).length;
-        const catPct = catTotal === 0 ? 0 : Math.round((catPacked / catTotal) * 100);
-
-        const filteredItems = cat.items.filter(item => {
-          const matchesSearch = item.name.toLowerCase().includes(query);
-          const matchesFilter =
-            state.filter === 'all' ||
-            (state.filter === 'packed' && item.packed) ||
-            (state.filter === 'remaining' && !item.packed);
-          return matchesSearch && matchesFilter;
-        });
-
-        return `
-          <div class="bg-ivory rounded-2xl border border-forest/15 shadow-2xs flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-forest/10 bg-forest/5">
-              <div class="flex justify-between items-center mb-1.5">
-                <h4 class="font-serif font-bold text-sm text-forest">${cat.name}</h4>
-                <span class="text-xs font-semibold text-gray-600">${catPacked}/${catTotal} (${catPct}%)</span>
-              </div>
-              <div class="w-full h-1.5 bg-forest/10 rounded-full overflow-hidden">
-                <div class="h-full bg-forest transition-all duration-300" style="width: ${catPct}%"></div>
-              </div>
-            </div>
-
-            <ul class="divide-y divide-forest/10 p-2.5 flex-1 space-y-1">
-              ${
-                filteredItems.length === 0
-                  ? `<li class="py-6 text-center text-xs text-gray-400">No matching items in this section.</li>`
-                  : filteredItems.map(item => `
-                    <li class="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-white/80 transition">
-                      <label class="flex items-start gap-3 cursor-pointer flex-1 select-none">
-                        <input type="checkbox" class="custom-checkbox hidden" ${item.packed ? 'checked' : ''} onchange="toggleItem('${cat.id}', '${item.id}')" />
-                        <div class="w-5 h-5 mt-0.5 rounded-lg border border-forest/30 bg-white flex items-center justify-center shrink-0 transition">
-                          <svg class="w-3.5 h-3.5 text-white hidden pointer-events-none" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                          </svg>
-                        </div>
-                        <span class="text-xs sm:text-sm ${item.packed ? 'line-through text-gray-400' : 'text-charcoal font-medium'}">
-                          ${item.name}
-                        </span>
-                      </label>
-
-                      <div class="flex items-center gap-1 shrink-0 no-print">
-                        <button onclick="changeQty('${cat.id}', '${item.id}', -1)" class="w-6 h-6 text-xs bg-white border border-forest/20 rounded-lg text-charcoal font-bold hover:bg-gray-100">-</button>
-                        <span class="text-xs font-semibold text-charcoal px-1">x${item.qty}</span>
-                        <button onclick="changeQty('${cat.id}', '${item.id}', 1)" class="w-6 h-6 text-xs bg-white border border-forest/20 rounded-lg text-charcoal font-bold hover:bg-gray-100">+</button>
-                        <button onclick="deleteItem('${cat.id}', '${item.id}')" title="Remove" class="ml-1 text-gray-300 hover:text-rose-600 text-xs px-1">✕</button>
-                      </div>
-                    </li>
-                  `).join('')
-              }
-            </ul>
-          </div>
-        `;
-      }).join('');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      setupUploadInputs();
-      loadState();
-    });
-  </script>
+  <noscript><p class="p-4 text-center bg-amber/30">JavaScript is off. The itinerary and emergency contacts above still work; the checklist, dashboard and gallery need JavaScript.</p></noscript>
 </body>
 </html>

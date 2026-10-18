@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-padding-top: 5rem; -webkit-text-size-adjust: 100%; }
+  body { @apply bg-ivory text-charcoal font-sans antialiased; }
+  h1, h2, h3, h4 { @apply font-serif; }
+  :focus-visible { outline: 3px solid #D8A84E; outline-offset: 2px; border-radius: 6px; }
+  [hidden] { display: none !important; }
+  dialog::backdrop { background: rgb(37 43 42 / 0.7); }
+  /* No smooth scrolling: on phones it stopped short when lazy sections above changed height */
+}
+
+@layer components {
+  .card { @apply bg-white rounded-2xl border border-forest/10 shadow-sm; }
+  .section { @apply card p-5 sm:p-7; }
+  .eyebrow { @apply text-xs font-bold uppercase tracking-wider text-himalaya-dark; }
+  .section-title { @apply font-serif font-bold text-2xl sm:text-3xl text-forest mt-1; }
+  .btn { @apply inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-forest text-ivory hover:bg-forest-light; }
+  .btn-amber { @apply btn bg-amber text-forest-dark hover:bg-amber/90; }
+  .btn-ghost { @apply btn bg-forest/5 text-forest hover:bg-forest/10; }
+  .btn-danger { @apply btn bg-rose-50 text-rose-800 hover:bg-rose-100; }
+  .btn-sm { @apply min-h-[36px] px-3 py-1.5 text-xs; }
+  .field { @apply w-full min-h-[44px] px-3.5 py-2.5 bg-ivory border border-forest/25 rounded-xl text-sm text-charcoal placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest; }
+  .label { @apply block text-sm font-semibold text-charcoal mb-1; }
+  .chip { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold; }
+  .stat { @apply rounded-2xl border border-ivory/15 bg-white/5 p-4; }
+  .modal { @apply w-[min(100%-2rem,32rem)] max-h-[90vh] rounded-2xl p-0 shadow-2xl text-charcoal; }
+  .navlink { @apply px-3 py-2 rounded-lg text-sm font-semibold text-forest hover:bg-forest/10 whitespace-nowrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- Print: only the chosen section is printed ---------- */
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff !important; }
+  .no-print, header, footer, #offlineBanner, #urgentBanner { display: none !important; }
+  html[data-print] main > *, html[data-print] #hero, html[data-print] #summary { display: none !important; }
+  html[data-print="itinerary"] #itinerary,
+  html[data-print="checklist"] #checklist,
+  html[data-print="memory"] #memory { display: block !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+  details > div { display: block !important; }
+  .card, .section { box-shadow: none !important; }
+  a[href^="tel:"]::after { content: ""; }
+  .print-break { break-inside: avoid; }
+}

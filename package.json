@@ -1,0 +1,10 @@
+{
+  "name": "packmate-sikkim-tour",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i assets/src/input.css -o assets/app.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}
